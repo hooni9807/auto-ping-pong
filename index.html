@@ -79,6 +79,7 @@ canvas.board{display:block;width:100%;aspect-ratio:1/1;max-height:58vh;touch-act
 #info{position:relative;min-height:60px;padding:10px 12px 10px 14px;color:var(--muted);font-size:13.5px;line-height:1.55;
   background:linear-gradient(180deg,var(--panel-2),var(--panel));border:1px solid var(--line);border-radius:12px}
 #info strong{color:var(--parch);font-size:15px}
+#info .plus{margin-left:5px;padding:1px 6px;border-radius:5px;background:#f5c54226;color:var(--gold-hi);font:800 12px/1.3 var(--display)}
 #info .meta{color:var(--gold);font-size:12px;margin-left:6px}
 #info .ult{display:block;margin-top:4px}
 #info .chips{display:flex;flex-wrap:wrap;gap:4px;margin-top:6px}
@@ -168,8 +169,19 @@ button.go:hover:not(:disabled){background:linear-gradient(180deg,#fff0c4,#d9bb7c
 .food-ico{display:inline-block;vertical-align:-3px;flex:none}
 .sc:hover{transform:translateY(-2px)}
 .sc.sel{transform:translateY(-4px);box-shadow:inset 0 0 0 2px var(--gold-hi),0 0 0 2px var(--gold),0 10px 18px -8px #000}
-.sc.frozen::after{content:"";position:absolute;inset:0;border-radius:10px;box-shadow:inset 0 0 0 3px var(--ice);
-  background:linear-gradient(180deg,#bfefff55,transparent 45%)}
+.sc.frozen{box-shadow:inset 0 0 0 2px #dff6ff,0 8px 16px -10px #000}
+.sc.frozen img,.sc.frozen .emo{filter:grayscale(.55) brightness(1.12) contrast(.92)}
+.sc .ice{position:absolute;inset:0;z-index:2;border-radius:10px;pointer-events:none;overflow:hidden;
+  background:
+    linear-gradient(118deg,transparent 44%,#ffffffcc 45%,transparent 46.5%),
+    linear-gradient(62deg,transparent 63%,#ffffff99 64%,transparent 65.2%),
+    linear-gradient(160deg,#eefbffd9 0%,#bfeaff66 20%,#9fdcff2e 40%,#9fdcff2e 70%,#d6f4ffb3 100%);
+  box-shadow:inset 0 0 14px 2px #c9efffcc}
+.sc .ice::before{content:"";position:absolute;left:0;right:0;top:0;height:13px;background:linear-gradient(#ffffff,#c7ecff);
+  clip-path:polygon(0 0,100% 0,100% 40%,94% 100%,88% 45%,80% 85%,72% 40%,64% 100%,56% 45%,47% 80%,39% 40%,30% 100%,22% 45%,14% 90%,7% 40%,0 70%)}
+.sc .ice svg{position:absolute;left:50%;top:38%;width:30px;height:30px;transform:translate(-50%,-50%);color:#fff;stroke-width:2.4;filter:drop-shadow(0 1px 2px #1b5f86)}
+@media (prefers-reduced-motion:no-preference){.sc .ice.fresh{animation:frostIn .45s cubic-bezier(.16,1,.3,1)}}
+@keyframes frostIn{from{clip-path:inset(0 0 100% 0);opacity:.4}to{clip-path:inset(0 0 0 0);opacity:1}}
 .sep{flex:0 0 1px;margin:6px 2px;background:var(--line)}
 
 #bctl{display:flex;gap:8px;justify-content:center}
@@ -185,7 +197,11 @@ button.go:hover:not(:disabled){background:linear-gradient(180deg,#fff0c4,#d9bb7c
 #lobby{max-width:720px;margin:0 auto;padding:10px 16px 28px;display:flex;flex-direction:column;gap:14px}
 #account{color:var(--muted);font-size:12px;margin-top:-6px}
 .play{display:flex;flex-direction:column;gap:10px;padding:18px 14px;border:1px solid var(--line-strong);border-radius:14px;background:linear-gradient(180deg,#132a32,#0b1a20)}
-button.wide{width:100%;min-height:58px;font-size:18px}
+button.wide{width:100%;min-height:58px;font-size:18px;flex-wrap:wrap;row-gap:3px;padding:8px 16px;white-space:normal;text-align:center;line-height:1.2}
+button.wide small{flex-basis:100%;margin:0!important;text-align:center;line-height:1.3}
+#resume{flex-wrap:nowrap}#resume span{min-width:0}
+@media (max-width:360px){.rf button{padding:0 8px;font-size:11.5px}.rtabs button{padding:0 10px}}
+#account{overflow-wrap:anywhere}
 .hint{margin:4px 0 2px;color:var(--muted);font-size:12.5px;text-align:center}
 .dgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
 @media (min-width:640px){.dgrid{grid-template-columns:repeat(4,1fr)}}
@@ -1076,7 +1092,11 @@ function makeArena(cv){
     g.textAlign='left';g.fillStyle='#f5c542';g.fillText('★'.repeat(u.L||1),bx,by-1);
     g.textAlign='right';g.fillStyle='#fff';g.fillText(`${u.atk}/${u.hp}`,bx+bw,by-1);
     if(u.perk){g.textAlign='left';g.textBaseline='middle';g.font=`${fs}px sans-serif`;g.drawImage(FOOD_IMG[u.perk],bx+bw+2,by+bh/2-fs*.6,fs*1.2,fs*1.2)}
-    if(still){g.textAlign='center';g.textBaseline='top';g.font=`600 ${Math.max(9,k*.15)}px Pretendard Variable,system-ui,sans-serif`;g.fillStyle='#dbe2ff';g.fillText(PETS[u.key].n,u.x,u.y+3)}
+    if(still){   // 이름 + 합친 횟수(+N)
+      const nm=PETS[u.key].n,xp=u.next?.xp||0,plus=xp?` +${xp}`:'';g.textBaseline='top';g.font=`700 ${Math.max(9,k*.15)}px Pretendard Variable,system-ui,sans-serif`;
+      const w1=g.measureText(nm).width,w2=g.measureText(plus).width,x0=u.x-(w1+w2)/2;
+      g.textAlign='left';g.lineWidth=3;g.strokeStyle='#000a';g.strokeText(nm+plus,x0,u.y+3);
+      g.fillStyle='#dbe2ff';g.fillText(nm,x0,u.y+3);if(xp){g.fillStyle='#f5c542';g.fillText(plus,x0+w1,u.y+3)}}
   }
   function drawProj(p,now){
     if(now<p.t0||!p.t)return;
@@ -1182,19 +1202,21 @@ let me,bot,foeName,sel=null,mode='shop',fast=false;
 const board=makeArena($('board')),pboard=makeArena($('pboard'));
 const isSel=(src,i)=>sel&&sel.src===src&&sel.i===i?'sel':'';
 const COIN='<svg class="coin"><use href="#i-coin"/></svg>';
+let freshIce=null;
 function render(){
+  const fresh=freshIce;freshIce=null;
   const myTr=traitCounts(me.team),owned=k=>me.team.some(p=>p&&p.key===k);
   $('stage').innerHTML=me.pvp&&pvp?pvpStage():`<span style="color:${DIFFS[me.diff]?.c}">${DIFFS[me.diff]?.n||''}</span> 라운드 <span class="num">${me.turn}</span>`;
   $('gold').textContent=me.gold;
   $('trophy').innerHTML=`<svg class="ico" style="width:15px;height:15px;color:var(--gold)"><use href="#i-trophy"/></svg><span class="num">${me.wins}</span>/10`;
   $('players').innerHTML=`<div class="pl me"><b>나</b><span class="num">${me.lives}</span><div class="bar"><i style="width:${me.lives*20}%"></i></div></div><div class="pl foe"><b>${foeName}</b>${me.pvp&&pvp?`<span class="num">${pvp.oppLives}</span><small class="st8 ${oppGone()?'bad':oppReady()?'ok':''}">${oppGone()?'연결 끊김':oppReady()?'준비 완료':'팀 정하는 중'}</small><div class="bar"><i style="width:${pvp.oppLives*20}%"></i></div>`:'<span></span><div class="bar"><i style="width:100%"></i></div>'}</div>`;
-  $('shop').innerHTML=me.shop.pets.map((x,i)=>{const d=PETS[x.key];return`<div class="sc ${isSel('pet',i)} ${x.frozen?'frozen':''} ${owned(x.key)?'owned':''} ${x.bonus?'bonus':''}" style="--tc:${TC[d.t]}" data-pet="${i}" role="button" aria-label="${d.n} ${d.t}코스트, 3골드${owned(x.key)?', 보드에 있음':''}${x.bonus?', 레벨업 보너스':''}"><img src="faces/${d.f||x.key}-face.png" alt="" draggable="false"><span class="st"><b>${x.atk}</b><b>${x.hp}</b></span><span class="tt">${(TRAIT_OF[x.key]||[]).map(t=>`<i class="${myTr[t]?'has':''}" style="--tc:${TRAITS[t].c}">${TRAITS[t].s}</i>`).join('')}</span>${owned(x.key)?'<span class="spark" aria-hidden="true"></span>':''}${x.bonus?'<span class="bonus-tag">레벨업 보너스</span>':''}<span class="cb">${d.t}<small>코</small></span><div class="plate"><span>${d.n}</span></div></div>`}).join('')
+  $('shop').innerHTML=me.shop.pets.map((x,i)=>{const d=PETS[x.key];return`<div class="sc ${isSel('pet',i)} ${x.frozen?'frozen':''} ${owned(x.key)?'owned':''} ${x.bonus?'bonus':''}" style="--tc:${TC[d.t]}" data-pet="${i}" role="button" aria-label="${d.n} ${d.t}코스트, 3골드${owned(x.key)?', 보드에 있음':''}${x.bonus?', 레벨업 보너스':''}"><img src="faces/${d.f||x.key}-face.png" alt="" draggable="false"><span class="st"><b>${x.atk}</b><b>${x.hp}</b></span><span class="tt">${(TRAIT_OF[x.key]||[]).map(t=>`<i class="${myTr[t]?'has':''}" style="--tc:${TRAITS[t].c}">${TRAITS[t].s}</i>`).join('')}</span>${owned(x.key)?'<span class="spark" aria-hidden="true"></span>':''}${x.bonus?'<span class="bonus-tag">레벨업 보너스</span>':''}<span class="cb">${d.t}<small>코</small></span><div class="plate"><span>${d.n}</span></div>${x.frozen?`<span class="ice ${fresh==='p'+i?'fresh':''}" aria-hidden="true"><svg class="ico"><use href="#i-freeze"/></svg></span>`:''}</div>`}).join('')
     +'<div class="sep"></div>'
-    +me.shop.food.map((x,i)=>{const f=FOODS[x.key];return`<div class="sc ${isSel('food',i)} ${x.frozen?'frozen':''}" style="--tc:${TC[f.t]}" data-food="${i}" role="button" aria-label="${f.n} 3골드"><div class="emo">${foodSvg(x.key,54)}</div><span class="cb">${f.t}<small>코</small></span><div class="plate"><span>${f.n}</span></div></div>`}).join('');
+    +me.shop.food.map((x,i)=>{const f=FOODS[x.key];return`<div class="sc ${isSel('food',i)} ${x.frozen?'frozen':''}" style="--tc:${TC[f.t]}" data-food="${i}" role="button" aria-label="${f.n} 3골드"><div class="emo">${foodSvg(x.key,54)}</div><span class="cb">${f.t}<small>코</small></span><div class="plate"><span>${f.n}</span></div>${x.frozen?`<span class="ice ${fresh==='f'+i?'fresh':''}" aria-hidden="true"><svg class="ico"><use href="#i-freeze"/></svg></span>`:''}</div>`}).join('');
   let info='상점 카드를 보드 칸으로 끌어다 놓거나, 카드를 누른 뒤 칸을 누르세요. 같은 캐릭터 위에 놓으면 합쳐져요. 3마리면 ★★, 6마리면 ★★★.';
   if(sel?.src==='food'){const f=FOODS[me.shop.food[sel.i].key];info=`<strong>${f.n}</strong><span class="meta">${f.t}코스트 · 3골드</span><br>${f.d}. ${f.all?'보드의 아무 캐릭터나 누르면 사용해요.':'장착할 캐릭터를 누르세요. 끌어다 놓아도 돼요.'}`}
   else if(sel){const p=sel.src==='team'?me.team[sel.i]:me.shop.pets[sel.i],d=PETS[p.key],L=p.xp!=null?lvlOf(p.xp):1,u=ultOf(p.key),ts=TRAIT_OF[p.key]||[];
-    info=`<strong style="color:${TC[d.t]==='#a3acb5'?'var(--parch)':TC[d.t]}">${d.n}</strong><span class="meta">${d.t}코스트 · ${'★'.repeat(L)} · ${sel.src==='team'?`팔면 ${L}골드`:'3골드'}</span><br>${d.d(L)}`
+    info=`<strong style="color:${TC[d.t]==='#a3acb5'?'var(--parch)':TC[d.t]}">${d.n}</strong>${p.xp?`<b class="plus">+${p.xp}</b>`:''}<span class="meta">${d.t}코스트 · ${'★'.repeat(L)} · ${sel.src==='team'?`팔면 ${L}골드`:'3골드'}</span><br>${d.d(L)}`
       +(u?`<span class="ult"><b style="color:${u.c}">${u.n}</b> 필살기 · ${ULT_DESC[u.t]}</span>`:'')
       +(p.perk?`<span class="ult">${foodSvg(p.perk,16)} ${FOODS[p.perk].d}</span>`:'')
       +(ts.length?`<span class="chips">${ts.map(t=>`<span class="chip" style="--tc:${TRAITS[t].c}"><i></i>${TRAITS[t].n}</span>`).join('')}</span>`:'')
@@ -1265,7 +1287,7 @@ document.addEventListener('pointerup',()=>{if(!pan)return;const el=$('shop'),v=p
 document.addEventListener('pointerup',e=>endDrag(e,true));
 document.addEventListener('pointercancel',e=>endDrag(e,false));
 $('roll').onclick=()=>{fail(reroll(me));sel=sel?.src==='team'?sel:null;render()};
-$('freeze').onclick=()=>{const it=(sel.src==='pet'?me.shop.pets:me.shop.food)[sel.i];it.frozen=!it.frozen;render()};
+$('freeze').onclick=()=>{const it=(sel.src==='pet'?me.shop.pets:me.shop.food)[sel.i];it.frozen=!it.frozen;if(it.frozen){freshIce=(sel.src==='pet'?'p':'f')+sel.i;Sound.sfx('tap')}render()};
 $('sell').onclick=()=>{sell(me,sel.i);sel=null;render()};
 $('speed').onclick=()=>{fast=!fast;board.speed(fast?2:1);$('speed').querySelector('span').textContent=fast?'1배속':'2배속'};
 $('skip').onclick=()=>board.skip();
