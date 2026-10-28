@@ -816,8 +816,12 @@ function makeArena(cv){
     const bw=k*.8,bh=Math.max(4,k*.085),bx=x-bw/2,by=y-k*1.36;   // 체력바 · 별 · 공격/체력
     g.fillStyle='#000c';g.fillRect(bx-1,by-1,bw+2,bh+2);
     g.fillStyle=u.side==='A'?'#22c55e':'#ef4444';g.fillRect(bx,by,bw*Math.max(0,u.hp)/u.mx,bh);
-    if(u.mp!=null&&ultOf(u.key)){const mh=Math.max(3,bh*.6),full=u.mp>=100;g.fillStyle='#000c';g.fillRect(bx-1,by+bh+1,bw+2,mh+2);   // 필살기 게이지
-      g.fillStyle=full?`hsl(${(now/4)%360},90%,70%)`:'#60a5fa';g.fillRect(bx,by+bh+2,bw*Math.min(100,u.mp)/100,mh)}
+    if(u.mp!=null&&ultOf(u.key)){   // 필살기 게이지: 체력바 바로 아래, 4칸 눈금 · 가득 차면 하얗게 번쩍
+      const mh=Math.max(5,bh*.85),my=by+bh+2,full=u.mp>=100,f=Math.min(100,u.mp)/100;
+      g.fillStyle='#000d';g.fillRect(bx-1,my-1,bw+2,mh+2);g.fillStyle='#0b2a4a';g.fillRect(bx,my,bw,mh);
+      g.fillStyle=full?(Math.sin(now/90)>0?'#ffffff':'#7dd3fc'):'#38bdf8';g.fillRect(bx,my,bw*f,mh);
+      g.fillStyle='#ffffff55';g.fillRect(bx,my,bw*f,Math.max(1,mh*.35));
+      g.fillStyle='#000a';for(let q=1;q<4;q++)g.fillRect(bx+bw*q/4-.5,my,1,mh)}
     const fs=Math.max(9,k*.17);g.font=`800 ${fs}px Pretendard Variable,system-ui,sans-serif`;g.textBaseline='bottom';
     g.textAlign='left';g.fillStyle='#f5c542';g.fillText('★'.repeat(u.L||1),bx,by-1);
     g.textAlign='right';g.fillStyle='#fff';g.fillText(`${u.atk}/${u.hp}`,bx+bw,by-1);
@@ -1022,7 +1026,7 @@ $('end').onclick=()=>{
   mode='battle';$('shopbar').hidden=$('info').hidden=true;$('bctl').hidden=false;$('next').hidden=true;$('skip').hidden=false;
   board.play(frames,()=>{
     $('skip').hidden=true;$('next').hidden=false;
-    const loss=me.turn<=2?1:me.turn<=4?2:3;
+    const loss=1;   // 지면 체력 1만 깎인다
     if(r==='win')me.wins++;else if(r==='lose')me.lives=Math.max(0,me.lives-loss);
     const over=me.wins>=10?'트로피 10개! 우승이에요':me.lives<=0?`게임 오버 · 트로피 ${me.wins}개`:'';
     $('caption').textContent=(r==='win'?'승리! 트로피 +1':r==='lose'?`패배… 체력 -${loss}`:'무승부')+(over?` — ${over}`:'');
