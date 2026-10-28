@@ -128,7 +128,8 @@ button.go:hover:not(:disabled){background:linear-gradient(180deg,#fff0c4,#d9bb7c
 .sc .st b{padding:3px 4px;border-radius:4px;color:#fff;background:#b45309}.sc .st b+b{background:#b91c1c}
 .sc .tt{position:absolute;right:4px;top:4px;display:flex;flex-direction:column;gap:2px}
 .sc .tt i{width:10px;height:11px;clip-path:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%)}
-.sc .emo{position:relative;display:grid;place-items:center;height:70%;font-size:34px;filter:drop-shadow(0 4px 6px #000a)}
+.sc .emo{position:relative;display:grid;place-items:center;height:72%;filter:drop-shadow(0 5px 6px #000a)}
+.food-ico{display:inline-block;vertical-align:-3px;flex:none}
 .sc:hover{transform:translateY(-2px)}
 .sc.sel{transform:translateY(-4px);box-shadow:inset 0 0 0 2px var(--gold-hi),0 0 0 2px var(--gold),0 10px 18px -8px #000}
 .sc.frozen::after{content:"";position:absolute;inset:0;border-radius:10px;box-shadow:inset 0 0 0 3px var(--ice);
@@ -251,6 +252,25 @@ const FOODS={
   pizza:{n:'피자',e:'🍕',t:6,d:'랜덤 아군 2명 +2/+2',all:[2,2]},
   steak:{n:'스테이크',e:'🥩',t:6,d:'다음 공격 피해 +20 (1회)',perk:1},
 };
+// 음식 아이콘: 32px 격자, 같은 굵기의 어두운 외곽선(1.6) 위에 평면 색 + 밝은 하이라이트 한 겹
+const ICON_STROKE='stroke="#1d1309" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round"';
+const FOOD_SVG={
+  apple:`<path d="M16 9c-3-2.5-9-1.5-9 5.5C7 21 11 27 14 27c1 0 1.4-.6 2-.6s1 .6 2 .6c3 0 7-6 7-12.5C25 7.5 19 6.5 16 9z" fill="#e23b3b" ${ICON_STROKE}/><path d="M16 9c0-2 .5-3.5 2-5" fill="none" ${ICON_STROKE}/><path d="M17.5 6.5c2.5-2.5 5.5-2 6.5-1-1 2.5-4 3.5-6.5 1z" fill="#4caf50" ${ICON_STROKE}/><path d="M10.5 13c.3-1.8 1.5-3 3-3.3" fill="none" stroke="#ffb3a8" stroke-width="1.8" stroke-linecap="round"/>`,
+  honey:`<rect x="9" y="5" width="14" height="4" rx="1.5" fill="#a0672b" ${ICON_STROKE}/><path d="M8 11c0-1.2 1-2 2-2h12c1 0 2 .8 2 2v13c0 2-1.6 3-3.5 3h-9C9.6 27 8 26 8 24z" fill="#f2a92c" ${ICON_STROKE}/><path d="M8.5 13h15c-.4 2-1.4 2.4-2.4 2.4-.8 0-1 1.6-2 1.6s-1-1.6-2-1.6H9.6c-.6 0-1-.8-1.1-2.4z" fill="#ffd36b"/><path d="M11 18v5" stroke="#ffe39e" stroke-width="1.8" stroke-linecap="round"/>`,
+  choco:`<rect x="8" y="5" width="16" height="22" rx="2" fill="#6b3a1f" ${ICON_STROKE}/><path d="M8 18h16v7a2 2 0 0 1-2 2H10a2 2 0 0 1-2-2z" fill="#2f6fb5" ${ICON_STROKE}/><path d="M16 5v13M8 9.5h16M8 14h16" stroke="#4a2612" stroke-width="1.4"/><path d="M10 7h4" stroke="#9b5a33" stroke-width="1.4" stroke-linecap="round"/><path d="M11 22h10" stroke="#9cc4ef" stroke-width="1.6" stroke-linecap="round"/>`,
+  meat:`<path d="M20 6c4.5 0 7 3.5 6 8-.8 3.8-4.3 6.5-8.6 6.4l-3.6 3.6-3.4-3.4 3.6-3.6C13.5 12 15.5 6 20 6z" fill="#b5462c" ${ICON_STROKE}/><path d="M17 10c1-1.6 2.6-2.4 4.5-2.2" fill="none" stroke="#e8836a" stroke-width="1.8" stroke-linecap="round"/><path d="M13.8 24 11 26.8a2 2 0 1 1-2.6-.4 2 2 0 1 1-.6-2.6L10.4 21z" fill="#f4ecdc" ${ICON_STROKE}/>`,
+  garlic:`<path d="M16 7c-1 3-9 6-9 13 0 4 3.8 7 9 7s9-3 9-7c0-7-8-10-9-13z" fill="#f3ead9" ${ICON_STROKE}/><path d="M16 9c-.8 4-3.6 7-3.6 11.5S14 27 16 27M16 9c.8 4 3.6 7 3.6 11.5S18 27 16 27" fill="none" stroke="#c9b99b" stroke-width="1.3"/><path d="M15 7.2c.2-1.6.5-2.6 1-3.2.5.6.8 1.6 1 3.2" fill="#9cbf6a" ${ICON_STROKE}/><path d="M10.5 18.5c.3-2 1.2-3.5 2.2-4.6" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/>`,
+  salad:`<path d="M6 17c3-6 6-8 9-6 1-4 6-5 8-2 3-.5 4 3 3 5" fill="#6ccf4e" ${ICON_STROKE}/><circle cx="12" cy="15" r="2.2" fill="#e8463c" ${ICON_STROKE}/><circle cx="20" cy="14" r="2" fill="#f7d046" ${ICON_STROKE}/><path d="M4.5 16h23c0 6-5 11-11.5 11S4.5 22 4.5 16z" fill="#e9dfcc" ${ICON_STROKE}/><path d="M8 19.5c1 2.5 3 4 5.5 4.6" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/>`,
+  sushi:`<path d="M5 19c0-3.5 5-6 11-6s11 2.5 11 6-5 6-11 6-11-2.5-11-6z" fill="#f7f4ec" ${ICON_STROKE}/><path d="M6 15.5c1-3.5 5.5-6 10.5-6 5.5 0 9.5 2.5 10 5.5-3 1.5-7 2-10.5 2S8.5 17 6 15.5z" fill="#ff8a5c" ${ICON_STROKE}/><path d="M10 12.5l3 3M15 11l3 4M20 11.5l2.5 3.5" stroke="#ffd2bd" stroke-width="1.3" stroke-linecap="round"/><path d="M14 13v12h4V13" fill="#233228" ${ICON_STROKE}/>`,
+  melon:`<circle cx="16" cy="17" r="10" fill="#8fcf6a" ${ICON_STROKE}/><path d="M9 11.5c3 2 4 7 2.5 12.5M16 7c1.5 3 1.5 16 0 20M23 11.5c-3 2-4 7-2.5 12.5M6.5 15c4 1 15 1 19 0M7.5 21c4 1.2 13 1.2 17 0" fill="none" stroke="#e8f7d2" stroke-width="1.2"/><path d="M15 7c.4-1.5 1.2-2.4 2.2-2.8" fill="none" ${ICON_STROKE}/>`,
+  pizza:`<path d="M16 28 4.5 8.5C11 4.5 21 4.5 27.5 8.5z" fill="#f6c94c" ${ICON_STROKE}/><path d="M4.5 8.5C11 4.5 21 4.5 27.5 8.5l-1.4 2.4C20.3 7.6 11.7 7.6 5.9 10.9z" fill="#c8813d" ${ICON_STROKE}/><circle cx="13" cy="13.5" r="2.2" fill="#d23a2e" ${ICON_STROKE}/><circle cx="19.5" cy="15" r="2" fill="#d23a2e" ${ICON_STROKE}/><circle cx="16" cy="21" r="1.8" fill="#d23a2e" ${ICON_STROKE}/>`,
+  steak:`<path d="M7 13c0-5 5-8 11-7.5 6 .5 9 4.5 8 9.5-.8 4.5-4 6-6.5 8.5S14.5 28 11 26.5 7 18 7 13z" fill="#f3e2d3" ${ICON_STROKE}/><path d="M9.5 13.5c0-3.5 3.8-5.8 8.5-5.4 4.5.4 6.6 3.4 5.8 7-.6 3.4-3 4.6-4.9 6.4-1.9 1.9-3.5 3.4-6 2.4-2.6-1-3.4-7-3.4-10.4z" fill="#a8322a"/><path d="M15 10v8M12 14h7" stroke="#f3e2d3" stroke-width="2.2" stroke-linecap="round"/><path d="M12 11c.8-.8 1.8-1.2 3-1.3" fill="none" stroke="#d9665c" stroke-width="1.4" stroke-linecap="round"/>`,
+  bee:`<ellipse cx="11" cy="11" rx="5" ry="3.5" fill="#cfeaff" ${ICON_STROKE} transform="rotate(-25 11 11)"/><ellipse cx="19" cy="10" rx="4.5" ry="3.2" fill="#cfeaff" ${ICON_STROKE} transform="rotate(25 19 10)"/><ellipse cx="16" cy="19" rx="9" ry="7" fill="#f7c536" ${ICON_STROKE}/><path d="M13 12.5c-1.3 4-1.3 9 0 13M18.5 12.3c1.3 4.2 1.3 9 0 13.4" fill="none" stroke="#1d1309" stroke-width="2.6"/><circle cx="23" cy="17.5" r="1.2" fill="#1d1309"/>`,
+};
+const foodSvg=(k,size=32)=>`<svg class="food-ico" viewBox="0 0 32 32" width="${size}" height="${size}" aria-hidden="true">${FOOD_SVG[k]}</svg>`;
+const FOOD_IMG={};   // 캔버스용: 같은 SVG를 이미지로 만들어 둔다
+for(const k in FOOD_SVG)FOOD_IMG[k]=Object.assign(new Image(),{src:'data:image/svg+xml;charset=utf-8,'+encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="64" height="64">${FOOD_SVG[k]}</svg>`)});
+
 
 // 필살기: SPP의 필살기를 캐릭터마다 하나씩. 기본 공격(+35)과 피격(+10)으로 게이지가 차고, 100이 되면 시전한다.
 // t = 계열(효과), fx = 이펙트, c = 색
@@ -660,7 +680,7 @@ function makeArena(cv){
     if(img?.complete&&img.naturalWidth){   // 얼굴 사진은 배경이 투명해서 테두리 없이 몸통 위에 얹는다 (턱이 옷깃을 살짝 덮게)
       g.save();if(S.lefty)g.scale(-1,1);g.shadowColor='#0007';g.shadowBlur=k*.08;g.shadowOffsetY=k*.02;g.drawImage(img,-fw/2,fy,fw,fh);g.shadowColor='transparent';
       if(fl_>0){g.globalCompositeOperation='lighter';g.globalAlpha*=fl_*.8;g.drawImage(img,-fw/2,fy,fw,fh)}g.restore();
-    }else{g.fillStyle='#fde68a';g.beginPath();g.arc(0,ty-k*.2,hr,0,7);g.fill();g.font=`${hr*1.3}px sans-serif`;g.textAlign='center';g.textBaseline='middle';g.fillText('🐝',0,ty-k*.2)}
+    }else if(FOOD_IMG.bee.complete)g.drawImage(FOOD_IMG.bee,-hr*1.2,ty-k*.2-hr*1.2,hr*2.4,hr*2.4)
     g.fillStyle='#fff3';g.fillRect(-k*.17,ty+k*.15,k*.34,k*.05);   // 유니폼 줄무늬
     g.lineWidth=k*.07;g.strokeStyle='#f1c9a5';
     line(-k*.16,ty+k*.09,-k*.27,ty+k*.3+ph*k*.04);
@@ -710,7 +730,7 @@ function makeArena(cv){
     const fs=Math.max(9,k*.17);g.font=`800 ${fs}px Pretendard Variable,system-ui,sans-serif`;g.textBaseline='bottom';
     g.textAlign='left';g.fillStyle='#f5c542';g.fillText('★'.repeat(u.L||1),bx,by-1);
     g.textAlign='right';g.fillStyle='#fff';g.fillText(`${u.atk}/${u.hp}`,bx+bw,by-1);
-    if(u.perk){g.textAlign='left';g.textBaseline='middle';g.font=`${fs}px sans-serif`;g.fillText(FOODS[u.perk].e,bx+bw+2,by+bh/2)}
+    if(u.perk){g.textAlign='left';g.textBaseline='middle';g.font=`${fs}px sans-serif`;g.drawImage(FOOD_IMG[u.perk],bx+bw+2,by+bh/2-fs*.6,fs*1.2,fs*1.2)}
     if(still){g.textAlign='center';g.textBaseline='top';g.font=`600 ${Math.max(9,k*.15)}px Pretendard Variable,system-ui,sans-serif`;g.fillStyle='#dbe2ff';g.fillText(PETS[u.key].n,u.x,u.y+3)}
   }
   function drawProj(p,now){
@@ -823,13 +843,13 @@ function render(){
   $('players').innerHTML=`<div class="pl me"><b>나</b><span class="num">${me.lives}</span><div class="bar"><i style="width:${me.lives*20}%"></i></div></div><div class="pl foe"><b>${foeName}</b><span></span><div class="bar"><i style="width:100%"></i></div></div>`;
   $('shop').innerHTML=me.shop.pets.map((x,i)=>{const d=PETS[x.key];return`<div class="sc ${isSel('pet',i)} ${x.frozen?'frozen':''}" style="--tc:${TC[d.t]}" data-pet="${i}" role="button" aria-label="${d.n} ${d.t}티어 3골드"><img src="faces/${d.f||x.key}-face.png" alt="" draggable="false"><span class="st"><b>${x.atk}</b><b>${x.hp}</b></span><span class="tt">${(TRAIT_OF[x.key]||[]).map(t=>`<i style="background:${TRAITS[t].c}"></i>`).join('')}</span><div class="plate"><span>${d.n}</span><span class="cost">${COIN}3</span></div></div>`}).join('')
     +'<div class="sep"></div>'
-    +me.shop.food.map((x,i)=>{const f=FOODS[x.key];return`<div class="sc ${isSel('food',i)} ${x.frozen?'frozen':''}" style="--tc:${TC[f.t]}" data-food="${i}" role="button" aria-label="${f.n} 3골드"><div class="emo">${f.e}</div><div class="plate"><span>${f.n}</span><span class="cost">${COIN}3</span></div></div>`}).join('');
+    +me.shop.food.map((x,i)=>{const f=FOODS[x.key];return`<div class="sc ${isSel('food',i)} ${x.frozen?'frozen':''}" style="--tc:${TC[f.t]}" data-food="${i}" role="button" aria-label="${f.n} 3골드"><div class="emo">${foodSvg(x.key,54)}</div><div class="plate"><span>${f.n}</span><span class="cost">${COIN}3</span></div></div>`}).join('');
   let info='상점에서 캐릭터를 고른 뒤 보드의 빈 칸을 누르세요. 같은 캐릭터 위에 놓으면 합쳐져요. 3마리면 ★★, 6마리면 ★★★.';
   if(sel?.src==='food'){const f=FOODS[me.shop.food[sel.i].key];info=`<strong>${f.n}</strong><span class="meta">${f.t}티어 · 3골드</span><br>${f.d}. ${f.all?'보드의 아무 캐릭터나 누르면 사용해요.':'먹일 캐릭터를 누르세요.'}`}
   else if(sel){const p=sel.src==='team'?me.team[sel.i]:me.shop.pets[sel.i],d=PETS[p.key],L=p.xp!=null?lvlOf(p.xp):1,u=ultOf(p.key),ts=TRAIT_OF[p.key]||[];
     info=`<strong style="color:${TC[d.t]==='#a3acb5'?'var(--parch)':TC[d.t]}">${d.n}</strong><span class="meta">${d.t}티어 · ${'★'.repeat(L)} · ${sel.src==='team'?`팔면 ${L}골드`:'3골드'}</span><br>${d.d(L)}`
       +(u?`<span class="ult"><b style="color:${u.c}">${u.n}</b> 필살기 · ${ULT_DESC[u.t]}</span>`:'')
-      +(p.perk?`<span class="ult">${FOODS[p.perk].e} ${FOODS[p.perk].d}</span>`:'')
+      +(p.perk?`<span class="ult">${foodSvg(p.perk,16)} ${FOODS[p.perk].d}</span>`:'')
       +(ts.length?`<span class="chips">${ts.map(t=>`<span class="chip" style="--tc:${TRAITS[t].c}"><i></i>${TRAITS[t].n}</span>`).join('')}</span>`:'')
       +(sel.src==='team'?'<span class="ult">빈 칸이나 다른 캐릭터를 누르면 자리를 옮겨요.</span>':'')}
   $('info').innerHTML=info;
