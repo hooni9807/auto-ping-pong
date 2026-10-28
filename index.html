@@ -330,7 +330,9 @@ function newGame(){me=newState(true);bot=newState(false);foeName=PETS[pickPet(1,
 
 // ---------- Google 로그인 · Firestore 저장 (autopets/{uid} 한 문서) ----------
 // ponytail: 턴 시작 시점만 저장한다. 상점에서 하던 일은 새로고침하면 그 턴 처음으로 돌아간다.
-const FIREBASE_CONFIG=null;
+const FIREBASE_CONFIG={apiKey:"AIzaSyAWdG1ybx321oEc6PeYy7elnGsBOafpEbQ",authDomain:"spin-lab-ea7df.firebaseapp.com",
+  projectId:"spin-lab-ea7df",storageBucket:"spin-lab-ea7df.firebasestorage.app",messagingSenderId:"632748801549",
+  appId:"1:632748801549:web:667006e8d0dff5b4c31f44"};   // public web config; access is guarded by firestore rules (autopets/{uid})
 const FB='https://www.gstatic.com/firebasejs/10.12.2/';
 let fb=null,user=null,stats={games:0,champs:0,best:0};
 function showAccount(){
