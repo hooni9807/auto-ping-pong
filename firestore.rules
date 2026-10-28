@@ -11,5 +11,17 @@ service cloud.firestore {
         && request.resource.data.run is string && request.resource.data.run.size() <= 100000
         && request.resource.data.name is string && request.resource.data.name.size() <= 40;
     }
+    // 랭킹: 끝난 판마다 한 줄. 로그인한 사람은 모두 읽고, 본인 기록만 새로 쓸 수 있고, 고치거나 지울 수 없다.
+    match /autopets_rank/{id} {
+      allow read: if request.auth != null;
+      allow create: if request.auth != null && request.auth.token.firebase.sign_in_provider == 'google.com'
+        && request.resource.data.keys().hasOnly(['uid', 'name', 'diff', 'result', 'wins', 'at'])
+        && request.resource.data.uid == request.auth.uid
+        && request.resource.data.name is string && request.resource.data.name.size() >= 1 && request.resource.data.name.size() <= 20
+        && request.resource.data.diff in ['easy', 'hard', 'extreme', 'ultra']
+        && request.resource.data.result in ['win', 'lose']
+        && request.resource.data.wins is int && request.resource.data.wins >= 0 && request.resource.data.wins <= 10
+        && request.resource.data.at == request.time;
+    }
   }
 }

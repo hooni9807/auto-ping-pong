@@ -32,7 +32,7 @@ body{margin:0;min-height:100vh;color:var(--ink);font:15px/1.5 var(--body);letter
 main{max-width:920px;margin:0 auto;padding:10px 16px 20px;display:flex;flex-direction:column;gap:10px}
 .top{display:flex;align-items:center;gap:10px}
 .brand{font:800 17px/1 var(--display);color:var(--gold-hi);letter-spacing:.02em;white-space:nowrap;margin:0}
-#stage{margin:0 auto;display:flex;align-items:center;gap:6px;padding:5px 16px;color:var(--parch);font:700 13px/1 var(--body);
+#stage{margin:0 auto;display:flex;white-space:nowrap;align-items:center;gap:6px;padding:5px 16px;color:var(--parch);font:700 13px/1 var(--body);
   background:linear-gradient(#1d3640,#10222a);border:1px solid var(--line-strong);clip-path:polygon(8px 0,calc(100% - 8px) 0,100% 50%,calc(100% - 8px) 100%,8px 100%,0 50%)}
 #stage .num{color:var(--gold-hi);font-size:16px}
 #account{color:var(--muted);font-size:12px;margin-top:-4px}
@@ -95,7 +95,7 @@ canvas.board{display:block;width:100%;aspect-ratio:1/1;max-height:58vh;touch-act
 #trophy{display:flex;align-items:center;gap:4px;color:var(--muted);font-size:12px}
 #trophy .num{color:var(--parch);font-size:14px}
 .actions{display:grid;grid-template-columns:repeat(3,auto) 1fr;gap:6px;margin-left:auto}
-button{font:600 13px/1 var(--body);color:var(--parch);cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:6px;
+button{white-space:nowrap;font:600 13px/1 var(--body);color:var(--parch);cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:6px;
   min-height:40px;padding:0 12px;background:linear-gradient(180deg,#1c3a45,#122a32);border:1px solid var(--line);border-radius:10px;
   transition:background-color .15s,border-color .15s,transform .1s}
 button:hover:not(:disabled){border-color:var(--line-strong);background:linear-gradient(180deg,#234754,#163440)}
@@ -106,6 +106,7 @@ button.go{min-height:44px;padding:0 18px;color:var(--gold-ink);font-weight:800;f
   background:linear-gradient(180deg,#f6dea3,#c8aa6e 55%,#a3824a)}
 button.go:hover:not(:disabled){background:linear-gradient(180deg,#fff0c4,#d9bb7c 55%,#b08f55)}
 @media (max-width:520px){
+  .brand{font-size:14px}#stage{padding:5px 12px;font-size:12px}
   .bar2{flex-wrap:wrap}.actions{width:100%;grid-template-columns:repeat(3,1fr) 1.3fr;margin-left:0}
   .actions button{flex-direction:column;gap:3px;min-height:54px;padding:6px 4px;font-size:12px;white-space:nowrap}
   .actions button.go{font-size:13px}
@@ -113,7 +114,12 @@ button.go:hover:not(:disabled){background:linear-gradient(180deg,#fff0c4,#d9bb7c
   .pl{min-width:104px}
 }
 
-.shoprow{display:flex;gap:8px;overflow-x:auto;padding:2px 2px 6px;scrollbar-width:thin;scrollbar-color:var(--gold) transparent}
+.shoprow{display:flex;gap:8px;overflow-x:auto;padding:4px 14px 8px;margin:0 -10px;scroll-snap-type:x proximity;scroll-padding:0 14px;overscroll-behavior-x:contain;-webkit-overflow-scrolling:touch;
+  scrollbar-width:thin;scrollbar-color:var(--gold) transparent;cursor:grab;
+  -webkit-mask:linear-gradient(90deg,transparent 0,#000 14px,#000 calc(100% - 14px),transparent 100%);mask:linear-gradient(90deg,transparent 0,#000 14px,#000 calc(100% - 14px),transparent 100%)}
+.shoprow.grabbing{cursor:grabbing;scroll-snap-type:none}
+.sc{scroll-snap-align:start}
+@media (prefers-reduced-motion:no-preference){.shoprow{scroll-behavior:smooth}.shoprow.grabbing{scroll-behavior:auto}}
 .shoprow::-webkit-scrollbar{height:6px}.shoprow::-webkit-scrollbar-thumb{background:var(--line-strong);border-radius:3px}
 .sc{--tc:var(--c1);position:relative;flex:0 0 auto;width:86px;aspect-ratio:3/4;cursor:pointer;border-radius:10px;overflow:hidden;
   background:linear-gradient(180deg,#1a2f37 0%,#0c181d 100%);box-shadow:inset 0 0 0 2px var(--tc),0 8px 16px -10px #000;transition:transform .15s,box-shadow .15s}
@@ -138,6 +144,15 @@ button.go:hover:not(:disabled){background:linear-gradient(180deg,#fff0c4,#d9bb7c
 .sc .tt i.has{background:var(--tc);color:#08100f}.sc .tt i.has::before{background:#08100f}
 /* 보드에 같은 캐릭터가 있으면: 테두리를 도는 빛 + 모서리 반짝임 (합성 가능 표시) */
 @property --spin{syntax:'<angle>';inherits:false;initial-value:0deg}
+.sc.bonus{box-shadow:inset 0 0 0 2px #b9a4ff,0 0 0 2px #6d5dfc,0 10px 18px -8px #000}
+.sc.bonus::after{content:"";position:absolute;inset:0;border-radius:10px;pointer-events:none;z-index:2;background:linear-gradient(115deg,transparent 30%,#d9ccff55 45%,#9ef0ff44 52%,transparent 66%);background-size:250% 100%;background-position:100% 0}
+.sc .bonus-tag{position:absolute;left:0;right:0;top:44%;z-index:3;padding:2px 0;text-align:center;font:800 9.5px/1.3 var(--body);color:#fff;background:linear-gradient(90deg,#5b47e0,#2fb8d8);letter-spacing:.02em}
+@media (prefers-reduced-motion:no-preference){
+  .sc.bonus{animation:bonusPulse 1.6s ease-in-out infinite}
+  .sc.bonus::after{animation:sheen 2.2s ease-in-out infinite}
+}
+@keyframes bonusPulse{0%,100%{box-shadow:inset 0 0 0 2px #b9a4ff,0 0 0 2px #6d5dfc,0 10px 18px -8px #000}50%{box-shadow:inset 0 0 0 2px #e2d9ff,0 0 0 3px #22c7e8,0 10px 18px -8px #000}}
+@keyframes sheen{0%{background-position:100% 0}60%,100%{background-position:-40% 0}}
 .sc.owned{box-shadow:inset 0 0 0 2px var(--gold-hi),0 8px 16px -10px #000}
 .sc .spark{position:absolute;inset:0;border-radius:10px;padding:2.5px;pointer-events:none;z-index:2;
   background:conic-gradient(from var(--spin),transparent 0 62%,#fff8dc 74%,var(--gold-hi) 80%,transparent 92%);
@@ -158,6 +173,33 @@ button.go:hover:not(:disabled){background:linear-gradient(180deg,#fff0c4,#d9bb7c
 .sep{flex:0 0 1px;margin:6px 2px;background:var(--line)}
 
 #bctl{display:flex;gap:8px;justify-content:center}
+#lobby{max-width:720px;margin:0 auto;padding:10px 16px 28px;display:flex;flex-direction:column;gap:14px}
+#account{color:var(--muted);font-size:12px;margin-top:-6px}
+.play{display:flex;flex-direction:column;gap:10px;padding:18px 14px;border:1px solid var(--line-strong);border-radius:14px;background:linear-gradient(180deg,#132a32,#0b1a20)}
+button.wide{width:100%;min-height:58px;font-size:18px}
+.hint{margin:4px 0 2px;color:var(--muted);font-size:12.5px;text-align:center}
+.dgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+@media (min-width:640px){.dgrid{grid-template-columns:repeat(4,1fr)}}
+.dbtn{flex-direction:column;align-items:flex-start;gap:4px;min-height:84px;padding:12px;text-align:left;border:1px solid color-mix(in srgb,var(--dc) 55%,transparent);
+  background:linear-gradient(180deg,color-mix(in srgb,var(--dc) 22%,#10222a),#0d1c22)}
+.dbtn b{font-size:17px;color:var(--parch)}.dbtn small{color:var(--muted);font-size:11.5px;line-height:1.4;font-weight:500}
+.dbtn:hover:not(:disabled){border-color:var(--dc);background:linear-gradient(180deg,color-mix(in srgb,var(--dc) 32%,#10222a),#0d1c22)}
+.rankbox{padding:14px;border:1px solid var(--line);border-radius:14px;background:var(--panel)}
+.rankhead{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:10px}
+.rankhead h2{margin:0;font:800 20px/1 var(--display);color:var(--gold-hi)}
+.rf{display:flex;gap:4px;flex-wrap:wrap}
+.rf button{min-height:30px;padding:0 10px;font-size:12px;border-radius:999px}
+.rf button.on{background:var(--gold);color:var(--gold-ink);border-color:var(--gold)}
+#rank table{width:100%;border-collapse:collapse;font-size:13px}
+#rank th{padding:6px 6px;text-align:left;color:var(--muted);font-weight:600;font-size:11.5px;border-bottom:1px solid var(--line)}
+#rank td{padding:8px 6px;border-bottom:1px solid #ffffff0d;color:var(--parch);vertical-align:middle}
+#rank td.num{font:600 12px/1.2 var(--body);font-variant-numeric:tabular-nums;color:var(--muted)}
+#rank tr.mine td{background:#c8aa6e14}
+#rank small{color:var(--muted)}
+.dtag{display:inline-block;padding:2px 7px;border-radius:5px;background:color-mix(in srgb,var(--dc) 25%,transparent);color:var(--parch);font-size:11.5px;font-weight:700;box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--dc) 60%,transparent)}
+.res{font-weight:800}.res.win{color:#5ee0a8}.res.lose{color:#ff8a94}
+.empty{margin:10px 0;color:var(--muted);font-size:13px;text-align:center}
+@media (max-width:520px){#rank th:nth-child(3),#rank td:nth-child(3){font-size:11px}#rank small{display:none}}
 
 /* 프롤로그 */
 #prologue{position:fixed;inset:0;z-index:5;overflow:auto;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:28px 16px;text-align:center;
@@ -201,9 +243,24 @@ button.go:hover:not(:disabled){background:linear-gradient(180deg,#fff0c4,#d9bb7c
   <button id="plogin" disabled><svg width="18" height="18" viewBox="0 0 48 48" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9.1 3.6l6.8-6.8C35.8 2.4 30.3 0 24 0 14.6 0 6.6 5.4 2.7 13.3l7.9 6.1C12.5 13.7 17.8 9.5 24 9.5z"/><path fill="#4285F4" d="M46.1 24.5c0-1.6-.1-3.1-.4-4.5H24v9h12.4c-.5 2.9-2.2 5.3-4.6 6.9l7.4 5.7c4.3-4 6.9-9.9 6.9-17.1z"/><path fill="#FBBC05" d="M10.6 28.6c-.5-1.4-.8-3-.8-4.6s.3-3.2.8-4.6l-7.9-6.1C1 16.6 0 20.2 0 24s1 7.4 2.7 10.7l7.9-6.1z"/><path fill="#34A853" d="M24 48c6.5 0 11.9-2.1 15.9-5.8l-7.4-5.7c-2.1 1.4-4.8 2.3-8.5 2.3-6.2 0-11.5-4.2-13.4-9.9l-7.9 6.1C6.6 42.6 14.6 48 24 48z"/></svg><span>불러오는 중…</span></button>
   <p class="note">로그인하면 진행 상황과 기록이 저장돼요</p>
 </div>
-<main hidden>
-  <div class="top"><h1 class="brand">Auto Ping Pong</h1><span id="stage"></span><button id="login">로그인</button></div>
+<section id="lobby" hidden>
+  <div class="top"><h1 class="brand">Auto Ping Pong</h1><span style="flex:1"></span><button id="logout">로그아웃</button></div>
   <div id="account"></div>
+  <div class="play">
+    <button id="resume" class="go wide" hidden><svg class="ico"><use href="#i-fast"/></svg><span>이어하기</span></button>
+    <button id="aiBtn" class="go wide"><svg class="ico"><use href="#i-fight"/></svg>AI 대전</button>
+    <div id="diffs" hidden>
+      <p class="hint">난이도를 고르면 바로 시작해요</p>
+      <div class="dgrid"><button class="dbtn" data-diff="easy" style="--dc:#17b98a"><b>이지</b><small>골드를 덜 받고, 아무 캐릭터나 사요</small></button><button class="dbtn" data-diff="hard" style="--dc:#3389e6"><b>하드</b><small>나와 같은 규칙으로 꼼꼼하게 팀을 짜요</small></button><button class="dbtn" data-diff="extreme" style="--dc:#c24de2"><b>익스트림</b><small>골드 +2, 매 턴 랜덤 2명 +1/+1</small></button><button class="dbtn" data-diff="ultra" style="--dc:#ff5470"><b>울트라</b><small>골드 +4, 매 턴 모두 +1/+1</small></button></div>
+    </div>
+  </div>
+  <section class="rankbox" aria-labelledby="rank-h">
+    <div class="rankhead"><h2 id="rank-h">랭킹</h2><div class="rf"><button data-rank="all" class="on">전체</button><button data-rank="easy">이지</button><button data-rank="hard">하드</button><button data-rank="extreme">익스트림</button><button data-rank="ultra">울트라</button></div></div>
+    <div id="rank"></div>
+  </section>
+</section>
+<main hidden>
+  <div class="top"><h1 class="brand">Auto Ping Pong</h1><span id="stage"></span><button id="toLobby">로비</button></div>
   <div class="wrap"><canvas id="board" class="board"></canvas><div id="caption" class="caption"></div><div id="traits" class="traits"></div><div class="right"><div id="players"></div><div id="ftraits" class="traits foe"></div></div></div>
   <div id="info"></div>
   <div id="shopbar">
@@ -356,8 +413,8 @@ function gainXp(S,p,n){
   const before=lvlOf(p.xp);p.xp=Math.min(5,p.xp+n);
   if(lvlOf(p.xp)>before){
     const t=Math.min(6,maxTier(S)+1);
-    S.shop.pets.push(shopPet(pickPet(t,t)));
-    if(S.human)toast(`${PETS[p.key].n} Lv${lvlOf(p.xp)}! 상점에 ${t}티어 보너스 펫`);
+    S.shop.pets.push({...shopPet(pickPet(t,t)),bonus:true});
+    if(S.human)toast(`${PETS[p.key].n} Lv${lvlOf(p.xp)}! 상점에 ${t}코스트 보너스 캐릭터`);
   }
 }
 function merge(S,t,src){t.atk=cap(Math.max(t.atk,src.atk)+1);t.hp=cap(Math.max(t.hp,src.hp)+1);gainXp(S,t,src.xp+1)}
@@ -386,13 +443,25 @@ function endTurn(S){S.team.forEach(p=>p&&PETS[p.key].endTurn?.(S,p,lvlOf(p.xp)))
 
 // ponytail: 탐욕적인 봇 (합성 > 빈칸 채우기 > 상위 티어로 교체 > 장비 > 리롤). 실제 게임처럼 다른 유저 팀이 필요하면 Firebase에 팀을 저장해 불러오면 된다.
 const score=p=>PETS[p.key].t*10+p.atk+p.hp;
-function botPlay(S){
+// AI 난이도: 턴마다 더 받는 골드, 턴 종료 강화, 이지는 합성을 자주 놓치고 아무거나 산다
+const DIFFS={
+  easy:{n:'이지',c:'#17b98a',gold:-3,d:'골드를 덜 받고, 아무 캐릭터나 사요'},
+  hard:{n:'하드',c:'#3389e6',gold:0,d:'나와 같은 규칙으로 꼼꼼하게 팀을 짜요'},
+  extreme:{n:'익스트림',c:'#c24de2',gold:2,d:'골드 +2, 매 턴 랜덤 캐릭터 2명 +1/+1'},
+  ultra:{n:'울트라',c:'#ff5470',gold:4,d:'골드 +4, 매 턴 모든 캐릭터 +1/+1'},
+};
+function diffBuff(S,d){
+  const t=S.team.filter(Boolean);
+  if(d==='extreme')shuffle(t).slice(0,2).forEach(p=>buff(p,1,1));
+  if(d==='ultra')t.forEach(p=>buff(p,1,1));
+}
+function botPlay(S,careless=false){
   for(let g=0;g<40;g++){
     const team=S.team,sp=S.shop.pets,empty=team.indexOf(null);
     if(S.gold>=3){
       const mi=sp.findIndex(x=>team.some(p=>p&&p.key===x.key&&p.xp<5));
-      if(mi>=0){buyPet(S,mi,team.findIndex(p=>p&&p.key===sp[mi].key&&p.xp<5));continue}
-      const best=sp.map((x,i)=>[PETS[x.key].t+Math.random(),i]).sort((a,b)=>b[0]-a[0])[0];
+      if(mi>=0&&!(careless&&Math.random()<.6)){buyPet(S,mi,team.findIndex(p=>p&&p.key===sp[mi].key&&p.xp<5));continue}
+      const best=sp.map((x,i)=>[careless?Math.random():PETS[x.key].t+Math.random(),i]).sort((a,b)=>b[0]-a[0])[0];
       if(best&&empty>=0){buyPet(S,best[1],empty);continue}
       if(best){const weak=team.reduce((m,p)=>score(p)<score(m)?p:m);if(PETS[sp[best[1]].key].t>PETS[weak.key].t){sell(S,team.indexOf(weak));continue}}
       if(S.shop.food.length&&team.some(Boolean)){buyFood(S,0,R(team.filter(Boolean)));continue}
@@ -861,11 +930,11 @@ const isSel=(src,i)=>sel&&sel.src===src&&sel.i===i?'sel':'';
 const COIN='<svg class="coin"><use href="#i-coin"/></svg>';
 function render(){
   const myTr=traitCounts(me.team),owned=k=>me.team.some(p=>p&&p.key===k);
-  $('stage').innerHTML=`라운드 <span class="num">${me.turn}</span>`;
+  $('stage').innerHTML=`<span style="color:${DIFFS[me.diff]?.c}">${DIFFS[me.diff]?.n||''}</span> 라운드 <span class="num">${me.turn}</span>`;
   $('gold').textContent=me.gold;
   $('trophy').innerHTML=`<svg class="ico" style="width:15px;height:15px;color:var(--gold)"><use href="#i-trophy"/></svg><span class="num">${me.wins}</span>/10`;
   $('players').innerHTML=`<div class="pl me"><b>나</b><span class="num">${me.lives}</span><div class="bar"><i style="width:${me.lives*20}%"></i></div></div><div class="pl foe"><b>${foeName}</b><span></span><div class="bar"><i style="width:100%"></i></div></div>`;
-  $('shop').innerHTML=me.shop.pets.map((x,i)=>{const d=PETS[x.key];return`<div class="sc ${isSel('pet',i)} ${x.frozen?'frozen':''} ${owned(x.key)?'owned':''}" style="--tc:${TC[d.t]}" data-pet="${i}" role="button" aria-label="${d.n} ${d.t}코스트, 3골드${owned(x.key)?', 보드에 있음':''}"><img src="faces/${d.f||x.key}-face.png" alt="" draggable="false"><span class="st"><b>${x.atk}</b><b>${x.hp}</b></span><span class="tt">${(TRAIT_OF[x.key]||[]).map(t=>`<i class="${myTr[t]?'has':''}" style="--tc:${TRAITS[t].c}">${TRAITS[t].s}</i>`).join('')}</span>${owned(x.key)?'<span class="spark" aria-hidden="true"></span>':''}<span class="cb">${d.t}<small>코</small></span><div class="plate"><span>${d.n}</span></div></div>`}).join('')
+  $('shop').innerHTML=me.shop.pets.map((x,i)=>{const d=PETS[x.key];return`<div class="sc ${isSel('pet',i)} ${x.frozen?'frozen':''} ${owned(x.key)?'owned':''} ${x.bonus?'bonus':''}" style="--tc:${TC[d.t]}" data-pet="${i}" role="button" aria-label="${d.n} ${d.t}코스트, 3골드${owned(x.key)?', 보드에 있음':''}${x.bonus?', 레벨업 보너스':''}"><img src="faces/${d.f||x.key}-face.png" alt="" draggable="false"><span class="st"><b>${x.atk}</b><b>${x.hp}</b></span><span class="tt">${(TRAIT_OF[x.key]||[]).map(t=>`<i class="${myTr[t]?'has':''}" style="--tc:${TRAITS[t].c}">${TRAITS[t].s}</i>`).join('')}</span>${owned(x.key)?'<span class="spark" aria-hidden="true"></span>':''}${x.bonus?'<span class="bonus-tag">레벨업 보너스</span>':''}<span class="cb">${d.t}<small>코</small></span><div class="plate"><span>${d.n}</span></div></div>`}).join('')
     +'<div class="sep"></div>'
     +me.shop.food.map((x,i)=>{const f=FOODS[x.key];return`<div class="sc ${isSel('food',i)} ${x.frozen?'frozen':''}" style="--tc:${TC[f.t]}" data-food="${i}" role="button" aria-label="${f.n} 3골드"><div class="emo">${foodSvg(x.key,54)}</div><span class="cb">${f.t}<small>코</small></span><div class="plate"><span>${f.n}</span></div></div>`}).join('');
   let info='상점 카드를 보드 칸으로 끌어다 놓거나, 카드를 누른 뒤 칸을 누르세요. 같은 캐릭터 위에 놓으면 합쳐져요. 3마리면 ★★, 6마리면 ★★★.';
@@ -909,7 +978,8 @@ document.addEventListener('click',e=>{
   else{const i=+el.dataset.food;sel=isSel('food',i)?null:{src:'food',i}}
   render();
 });
-let drag=null,noClick=false;
+let drag=null,noClick=false,pan=null;
+$('shop').addEventListener('wheel',e=>{const el=$('shop');if(Math.abs(e.deltaY)>Math.abs(e.deltaX)&&el.scrollWidth>el.clientWidth){e.preventDefault();el.scrollBy({left:e.deltaY,behavior:'auto'})}},{passive:false});
 document.addEventListener('pointerdown',e=>{
   if(mode!=='shop'||e.button>0)return;const el=e.target.closest('[data-pet],[data-food]');if(!el)return;
   drag={el,x:e.clientX,y:e.clientY,src:el.dataset.pet!=null?'pet':'food',i:+(el.dataset.pet??el.dataset.food),ghost:null,touch:e.pointerType!=='mouse'};
@@ -918,7 +988,9 @@ document.addEventListener('pointermove',e=>{
   if(!drag)return;const dx=e.clientX-drag.x,dy=e.clientY-drag.y;
   if(!drag.ghost){
     if(Math.hypot(dx,dy)<8)return;
-    if(drag.touch&&Math.abs(dx)>Math.abs(dy)){drag=null;return}   // 손가락을 옆으로 밀면 상점 줄 스크롤
+    if(Math.abs(dx)>Math.abs(dy)){   // 옆으로 밀면 상점 줄 스크롤 (터치는 브라우저가, 마우스는 직접)
+      if(!drag.touch){pan={x:e.clientX,left:$('shop').scrollLeft,v:0,t:performance.now()};$('shop').classList.add('grabbing')}
+      drag=null;return}
     sel={src:drag.src,i:drag.i};render();
     const el=$('shop').querySelector(`[data-${drag.src}="${drag.i}"]`);el?.classList.add('dragging');
     drag.ghost=el.cloneNode(true);drag.ghost.classList.remove('dragging','sel');drag.ghost.classList.add('ghost');document.body.append(drag.ghost);
@@ -933,6 +1005,9 @@ function endDrag(e,drop){
   if(drop){const r=$('board').getBoundingClientRect(),j=board.slotAt(e.clientX-r.left,e.clientY-r.top);if(j>=0){sel={src:d.src,i:d.i};teamClick(j)}}
   render();
 }
+document.addEventListener('pointermove',e=>{if(!pan)return;const el=$('shop'),now=performance.now(),nl=pan.left-(e.clientX-pan.x);pan.v=(nl-el.scrollLeft)/Math.max(1,now-pan.t);pan.t=now;el.scrollLeft=nl});
+document.addEventListener('pointerup',()=>{if(!pan)return;const el=$('shop'),v=pan.v;pan=null;noClick=true;setTimeout(()=>noClick=false,0);   // 놓으면 관성으로 조금 더 미끄러진다
+  el.classList.remove('grabbing');el.scrollBy({left:v*180,behavior:'smooth'})});
 document.addEventListener('pointerup',e=>endDrag(e,true));
 document.addEventListener('pointercancel',e=>endDrag(e,false));
 $('roll').onclick=()=>{fail(reroll(me));sel=sel?.src==='team'?sel:null;render()};
@@ -951,9 +1026,9 @@ $('end').onclick=()=>{
     if(r==='win')me.wins++;else if(r==='lose')me.lives=Math.max(0,me.lives-loss);
     const over=me.wins>=10?'트로피 10개! 우승이에요':me.lives<=0?`게임 오버 · 트로피 ${me.wins}개`:'';
     $('caption').textContent=(r==='win'?'승리! 트로피 +1':r==='lose'?`패배… 체력 -${loss}`:'무승부')+(over?` — ${over}`:'');
-    $('next').textContent=over?'새 게임':'다음 턴';
-    if(over){stats.games++;stats.best=Math.max(stats.best,me.wins);if(me.wins>=10)stats.champs++}
-    $('next').onclick=()=>{mode='shop';$('shopbar').hidden=$('info').hidden=false;$('bctl').hidden=true;over?newGame():nextTurn()};
+    $('next').textContent=over?'로비로':'다음 턴';
+    if(over){stats.games++;stats.best=Math.max(stats.best,me.wins);if(me.wins>=10)stats.champs++;record(me.wins>=10?'win':'lose',me.wins,me.diff);save()}
+    $('next').onclick=()=>{mode='shop';$('shopbar').hidden=$('info').hidden=false;$('bctl').hidden=true;over?showScreen('lobby'):nextTurn()};
   },$('caption'));
 };
 // 프롤로그: 봇 두 팀을 몇 턴 키운 뒤 실제 전투를 계속 돌려 보여 준다.
@@ -964,12 +1039,18 @@ function demo(){
   for(let t=0;t<turns;t++)for(const s of [a,b]){startTurn(s);botPlay(s);endTurn(s)}
   pboard.play(battle(a.team,b.team).frames,()=>{demoTimer=setTimeout(demo,1800)},$('pmsg'));
 }
-function gate(signedIn){
-  $('prologue').hidden=signedIn;document.querySelector('main').hidden=!signedIn;
-  if(signedIn){clearTimeout(demoTimer);pboard.stop();board.start();render()}else{board.stop();pboard.start();demo()}
+function gate(signedIn){showScreen(signedIn?'lobby':'prologue')}
+function nextTurn(){const d=me.diff||'hard';startTurn(me);startTurn(bot);bot.gold=Math.max(0,bot.gold+DIFFS[d].gold);botPlay(bot,d==='easy');endTurn(bot);diffBuff(bot,d);render();save()}
+function newGame(diff){me=newState(true);me.diff=diff;bot=newState(false);foeName=PETS[pickPet(1,6)].n+'의 팀';sel=null;if(diff)nextTurn()}
+const started=()=>me&&me.diff&&me.turn>0&&me.lives>0&&me.wins<10;
+function startGame(diff){if(diff)newGame(diff);showScreen('game')}
+function showScreen(sc){   // prologue · lobby · game
+  $('prologue').hidden=sc!=='prologue';$('lobby').hidden=sc!=='lobby';document.querySelector('main').hidden=sc!=='game';
+  clearTimeout(demoTimer);pboard.stop();board.stop();
+  if(sc==='prologue'){pboard.start();demo()}
+  if(sc==='game'){mode='shop';$('shopbar').hidden=$('info').hidden=false;$('bctl').hidden=true;board.start();render()}
+  if(sc==='lobby'){$('diffs').hidden=true;$('resume').hidden=!started();if(started())$('resume').querySelector('span').textContent=`이어하기 · ${DIFFS[me.diff]?.n||'하드'} 라운드 ${me.turn}`;loadRank()}
 }
-function nextTurn(){startTurn(me);startTurn(bot);botPlay(bot);endTurn(bot);render();save()}
-function newGame(){me=newState(true);bot=newState(false);foeName=PETS[pickPet(1,6)].n+'의 팀';sel=null;nextTurn()}
 
 // ---------- Google 로그인 · Firestore 저장 (autopets/{uid} 한 문서) ----------
 // ponytail: 턴 시작 시점만 저장한다. 상점에서 하던 일은 새로고침하면 그 턴 처음으로 돌아간다.
@@ -979,7 +1060,6 @@ const FIREBASE_CONFIG={apiKey:"AIzaSyDVSIKBSg-CWGMDJHzFNmxTDacpWo2s1J0",authDoma
 const FB='https://www.gstatic.com/firebasejs/10.12.2/';
 let fb=null,user=null,stats={games:0,champs:0,best:0};
 function showAccount(){
-  $('login').textContent=user?'로그아웃':'로그인';
   $('account').textContent=user?`${user.displayName||'플레이어'} · 완주 ${stats.games}판 · 우승 ${stats.champs}번 · 최고 트로피 ${stats.best}`:'로그인하면 진행 상황과 기록이 저장돼요';
 }
 async function initFirebase(){
@@ -994,7 +1074,7 @@ async function initFirebase(){
         const s=await fs.getDoc(fs.doc(fb.db,'autopets',u.uid));
         if(s.exists()){
           const d=s.data();stats={games:d.games||0,champs:d.champs||0,best:d.best||0};
-          if(d.run){const r=JSON.parse(d.run);me=r.me;bot=r.bot;foeName=r.foeName;uid=r.uid;sel=null;render();toast('저장된 게임을 불러왔어요')}
+          if(d.run){const r=JSON.parse(d.run);me=r.me;me.diff??='hard';bot=r.bot;foeName=r.foeName;uid=r.uid;sel=null}
         }else save();
       }catch(e){console.error(e);toast('기록을 불러오지 못했어요')}
     }
@@ -1005,19 +1085,40 @@ async function initFirebase(){
 async function save(){
   if(!fb||!user)return;
   const {F,db}=fb;
-  try{await F.setDoc(F.doc(db,'autopets',user.uid),{name:(user.displayName||'').slice(0,40),run:JSON.stringify({me,bot,foeName,uid}),...stats,at:F.serverTimestamp()})}
+  try{await F.setDoc(F.doc(db,'autopets',user.uid),{name:(user.displayName||'').slice(0,40),run:started()?JSON.stringify({me,bot,foeName,uid}):'',...stats,at:F.serverTimestamp()})}
   catch(e){console.error(e);toast('저장하지 못했어요')}
 }
+async function record(result,wins,diff){   // 랭킹 기록: 끝난 판마다 한 줄 (지우거나 고칠 수 없음)
+  if(!fb||!user)return;const {F,db}=fb;
+  try{await F.addDoc(F.collection(db,'autopets_rank'),{uid:user.uid,name:(user.displayName||'플레이어').slice(0,20),diff:diff||'hard',result,wins,at:F.serverTimestamp()})}
+  catch(e){console.error(e);toast('랭킹에 기록하지 못했어요')}
+}
+let rankFilter='all';
+async function loadRank(){
+  const box=$('rank');if(!fb||!user){box.innerHTML='<p class="empty">로그인하면 랭킹을 볼 수 있어요</p>';return}
+  box.innerHTML='<p class="empty">불러오는 중…</p>';
+  const {F,db}=fb;
+  try{
+    const q=rankFilter==='all'?F.query(F.collection(db,'autopets_rank'),F.orderBy('at','desc'),F.limit(30)):F.query(F.collection(db,'autopets_rank'),F.where('diff','==',rankFilter),F.limit(60));
+    const rows=(await F.getDocs(q)).docs.map(d=>d.data()).filter(r=>r.at).sort((a,b)=>b.at.toMillis()-a.at.toMillis()).slice(0,30);
+    if(!rows.length){box.innerHTML='<p class="empty">아직 기록이 없어요. 첫 기록의 주인공이 되어 보세요.</p>';return}
+    const two=n=>String(n).padStart(2,'0'),when=t=>{const d=t.toDate();return`${d.getFullYear()}.${two(d.getMonth()+1)}.${two(d.getDate())} ${two(d.getHours())}:${two(d.getMinutes())}`};
+    const esc=t=>String(t).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'})[c]);
+    box.innerHTML=`<table><thead><tr><th>닉네임</th><th>난이도</th><th>날짜 · 시간</th><th>결과</th></tr></thead><tbody>${rows.map(r=>`<tr class="${r.uid===user.uid?'mine':''}"><td>${esc(r.name)}</td><td><span class="dtag" style="--dc:${DIFFS[r.diff]?.c}">${DIFFS[r.diff]?.n||r.diff}</span></td><td class="num">${when(r.at)}</td><td><span class="res ${r.result}">${r.result==='win'?'승리':'패배'}</span><small> 트로피 ${r.wins}</small></td></tr>`).join('')}</tbody></table>`;
+  }catch(e){console.error(e);box.innerHTML='<p class="empty">랭킹을 불러오지 못했어요</p>'}
+}
+document.addEventListener('click',e=>{const b=e.target.closest('[data-rank]');if(!b)return;rankFilter=b.dataset.rank;document.querySelectorAll('[data-rank]').forEach(x=>x.classList.toggle('on',x===b));loadRank()});
+document.addEventListener('click',e=>{const b=e.target.closest('[data-diff]');if(b)startGame(b.dataset.diff)});
+$('aiBtn').onclick=()=>{$('diffs').hidden=!$('diffs').hidden};
+$('resume').onclick=()=>startGame();
+$('toLobby').onclick=()=>{save();showScreen('lobby')};
 async function login(){
   if(!fb)return toast('Firebase 연결 준비 중이에요');
   try{await fb.A.signInWithPopup(fb.auth,new fb.A.GoogleAuthProvider())}
   catch(e){if(e.code!=='auth/popup-closed-by-user')toast('로그인하지 못했어요')}
 }
 $('plogin').onclick=login;
-$('login').onclick=async()=>{
-  if(!user)return login();
-  await fb.A.signOut(fb.auth);stats={games:0,champs:0,best:0};newGame();
-};
+$('logout').onclick=async()=>{await fb.A.signOut(fb.auth);stats={games:0,champs:0,best:0};newGame()};
 newGame();showAccount();gate(false);
 initFirebase().catch(e=>{console.error(e);$('plogin').lastChild.textContent='연결 실패 · 새로고침해 주세요'});
 </script>
