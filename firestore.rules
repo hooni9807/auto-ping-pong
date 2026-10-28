@@ -1,0 +1,15 @@
+rules_version = '2';
+// Auto Ping Pong: one save doc per Google player (autopets/{uid}); only that player may read or write it.
+// Published by hand in the Firebase console (project auto-ping-pong-b04bd).
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /autopets/{uid} {
+      allow read: if request.auth != null && request.auth.uid == uid;
+      allow write: if request.auth != null && request.auth.uid == uid
+        && request.auth.token.firebase.sign_in_provider == 'google.com'
+        && request.resource.data.keys().hasOnly(['name', 'run', 'games', 'champs', 'best', 'at'])
+        && request.resource.data.run is string && request.resource.data.run.size() <= 100000
+        && request.resource.data.name is string && request.resource.data.name.size() <= 40;
+    }
+  }
+}
