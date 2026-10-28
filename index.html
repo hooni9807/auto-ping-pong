@@ -513,20 +513,19 @@ function makeArena(cv){
     if(P.kick){const ka=S.lefty?Math.PI-P.kick:P.kick;line(-k*.07,hip,-k*.11*spread,-k*.02);line(k*.07,hip,k*.07+Math.cos(ka)*k*.5,hip+Math.sin(ka)*k*.5)}
     else{line(-k*.07,hip,-k*.11*spread+ph*k*.08,-k*.02);line(k*.07,hip,k*.11*spread-ph*k*.08,-k*.02)}
     g.translate(0,hip);g.rotate(S.pose==='lean'?.12:0);g.translate(0,-hip);
-    const ty=-k*.75+cr*k,img=faceOf(u.key),fw=k*.5,fh=img?.naturalWidth?fw*img.naturalHeight/img.naturalWidth:fw,fy=ty+k*.07-fh,hr=k*.25,hyy=fy+fh*.38;
+    const ty=-k*.75+cr*k,img=faceOf(u.key),fw=k*.5,fh=img?.naturalWidth?fw*img.naturalHeight/img.naturalWidth:fw,fy=ty+k*.1-fh,hr=k*.25,hyy=fy+fh*.38;
     const fl_=1-(performance.now()-u.flash)/200;
     if(u.L>=3){   // 3성 금빛 머리
       g.save();g.globalCompositeOperation='lighter';g.fillStyle='#fde047';g.shadowColor='#fde047';g.shadowBlur=k*.4;g.beginPath();
       for(let i=0;i<=8;i++){const a=Math.PI+i/8*Math.PI,rr=hr*(i%2?1.05:1.75+Math.sin(performance.now()/80+i)*.12);g.lineTo(Math.cos(a)*rr,hyy+Math.sin(a)*rr)}
       g.fill();g.restore();
     }
-    g.fillStyle='#f1c9a5';g.fillRect(-k*.06,ty-k*.08,k*.12,k*.12);   // 목
-    if(img?.complete&&img.naturalWidth){   // 얼굴 사진은 배경이 투명해서 테두리 없이 목 위에 그대로 올린다
-      g.save();if(S.lefty)g.scale(-1,1);g.drawImage(img,-fw/2,fy,fw,fh);
-      if(fl_>0){g.globalCompositeOperation='lighter';g.globalAlpha*=fl_*.8;g.drawImage(img,-fw/2,fy,fw,fh)}g.restore();
-    }else{g.fillStyle='#fde68a';g.beginPath();g.arc(0,ty-k*.2,hr,0,7);g.fill();g.font=`${hr*1.3}px sans-serif`;g.textAlign='center';g.textBaseline='middle';g.fillText('🐝',0,ty-k*.2)}
     g.fillStyle=col;g.strokeStyle=u.side==='A'?'#3b82f6':'#ef4444';g.lineWidth=k*.05;   // 몸통: 내 팀 파랑 · 상대 빨강 테두리
     g.beginPath();g.roundRect(-k*.17,ty,k*.34,k*.41,[k*.12,k*.12,k*.06,k*.06]);g.fill();g.stroke();
+    if(img?.complete&&img.naturalWidth){   // 얼굴 사진은 배경이 투명해서 테두리 없이 몸통 위에 얹는다 (턱이 옷깃을 살짝 덮게)
+      g.save();if(S.lefty)g.scale(-1,1);g.shadowColor='#0007';g.shadowBlur=k*.08;g.shadowOffsetY=k*.02;g.drawImage(img,-fw/2,fy,fw,fh);g.shadowColor='transparent';
+      if(fl_>0){g.globalCompositeOperation='lighter';g.globalAlpha*=fl_*.8;g.drawImage(img,-fw/2,fy,fw,fh)}g.restore();
+    }else{g.fillStyle='#fde68a';g.beginPath();g.arc(0,ty-k*.2,hr,0,7);g.fill();g.font=`${hr*1.3}px sans-serif`;g.textAlign='center';g.textBaseline='middle';g.fillText('🐝',0,ty-k*.2)}
     g.fillStyle='#fff3';g.fillRect(-k*.17,ty+k*.15,k*.34,k*.05);   // 유니폼 줄무늬
     g.lineWidth=k*.07;g.strokeStyle='#f1c9a5';
     line(-k*.16,ty+k*.09,-k*.27,ty+k*.3+ph*k*.04);
