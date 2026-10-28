@@ -132,8 +132,23 @@ button.go:hover:not(:disabled){background:linear-gradient(180deg,#fff0c4,#d9bb7c
 .sc.dragging{opacity:.35}
 .sc .st{position:absolute;left:4px;top:4px;display:flex;gap:2px;font:800 10px/1 var(--display)}
 .sc .st b{padding:3px 4px;border-radius:4px;color:#fff;background:#b45309}.sc .st b+b{background:#b91c1c}
-.sc .tt{position:absolute;right:5px;top:24px;display:flex;flex-direction:column;gap:2px}
-.sc .tt i{width:10px;height:11px;clip-path:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%)}
+.sc .tt{position:absolute;right:4px;top:24px;display:flex;flex-direction:column;align-items:flex-end;gap:2px;z-index:1}
+.sc .tt i{display:flex;align-items:center;gap:3px;padding:1px 5px 1px 3px;border-radius:4px;background:#05090bd9;color:#c9d4d6;font:700 9.5px/1.3 var(--body);font-style:normal}
+.sc .tt i::before{content:"";width:7px;height:8px;background:var(--tc);clip-path:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%)}
+.sc .tt i.has{background:var(--tc);color:#08100f}.sc .tt i.has::before{background:#08100f}
+/* 보드에 같은 캐릭터가 있으면: 테두리를 도는 빛 + 모서리 반짝임 (합성 가능 표시) */
+@property --spin{syntax:'<angle>';inherits:false;initial-value:0deg}
+.sc.owned{box-shadow:inset 0 0 0 2px var(--gold-hi),0 8px 16px -10px #000}
+.sc .spark{position:absolute;inset:0;border-radius:10px;padding:2.5px;pointer-events:none;z-index:2;
+  background:conic-gradient(from var(--spin),transparent 0 62%,#fff8dc 74%,var(--gold-hi) 80%,transparent 92%);
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask:linear-gradient(#000 0 0) content-box exclude,linear-gradient(#000 0 0)}
+.sc .spark::after{content:"";position:absolute;left:6px;bottom:26px;width:14px;height:14px;background:#fff8dc;clip-path:polygon(50% 0,60% 40%,100% 50%,60% 60%,50% 100%,40% 60%,0 50%,40% 40%)}
+@media (prefers-reduced-motion:no-preference){
+  .sc .spark{animation:spin 1.8s linear infinite}
+  .sc .spark::after{animation:twinkle 1.4s ease-in-out infinite}
+}
+@keyframes spin{to{--spin:360deg}}
+@keyframes twinkle{0%,100%{opacity:.2;transform:scale(.5) rotate(0)}50%{opacity:1;transform:scale(1) rotate(45deg)}}
 .sc .emo{position:relative;display:grid;place-items:center;height:72%;filter:drop-shadow(0 5px 6px #000a)}
 .food-ico{display:inline-block;vertical-align:-3px;flex:none}
 .sc:hover{transform:translateY(-2px)}
@@ -305,13 +320,13 @@ const ultOf=key=>ULTS[ULT_OF[key]];
 
 // 시너지 (롤토체스식): 서로 다른 캐릭터 수로 세고, th 인원에 닿으면 단계가 켜진다. d = 단계별 효과
 const TRAITS={
-  atk:{n:'공격수',c:'#f97316',th:[2,4],d:['아군 전체 공격 +2','아군 전체 공격 +5']},
-  def:{n:'수비수',c:'#38bdf8',th:[2,4],d:['아군 전체 받는 피해 -1','아군 전체 받는 피해 -2']},
-  vet:{n:'동호회 아재',c:'#a3e635',th:[2,4],d:['아군 전체 체력 +3','아군 전체 체력 +7']},
-  tech:{n:'테크니션',c:'#c084fc',th:[2,3],d:['필살기 게이지 40으로 시작','필살기 게이지 80으로 시작']},
-  dual:{n:'이중인격',c:'#f43f5e',th:[2,3],d:['아군이 쓰러질 때마다 이중인격 아군 공격 +2','아군이 쓰러질 때마다 이중인격 아군 공격 +4']},
-  boss:{n:'보스',c:'#facc15',th:[2,3],d:['전투 시작: 모든 적에게 2 피해','전투 시작: 모든 적에게 4 피해']},
-  comeback:{n:'역전',c:'#2dd4bf',th:[2,3],d:['역전 아군이 쓰러지면 남은 아군 +2/+2','역전 아군이 쓰러지면 남은 아군 +4/+4']},
+  atk:{s:'공격',n:'공격수',c:'#f97316',th:[2,4],d:['아군 전체 공격 +2','아군 전체 공격 +5']},
+  def:{s:'수비',n:'수비수',c:'#38bdf8',th:[2,4],d:['아군 전체 받는 피해 -1','아군 전체 받는 피해 -2']},
+  vet:{s:'아재',n:'동호회 아재',c:'#a3e635',th:[2,4],d:['아군 전체 체력 +3','아군 전체 체력 +7']},
+  tech:{s:'테크',n:'테크니션',c:'#c084fc',th:[2,3],d:['필살기 게이지 40으로 시작','필살기 게이지 80으로 시작']},
+  dual:{s:'이중',n:'이중인격',c:'#f43f5e',th:[2,3],d:['아군이 쓰러질 때마다 이중인격 아군 공격 +2','아군이 쓰러질 때마다 이중인격 아군 공격 +4']},
+  boss:{s:'보스',n:'보스',c:'#facc15',th:[2,3],d:['전투 시작: 모든 적에게 2 피해','전투 시작: 모든 적에게 4 피해']},
+  comeback:{s:'역전',n:'역전',c:'#2dd4bf',th:[2,3],d:['역전 아군이 쓰러지면 남은 아군 +2/+2','역전 아군이 쓰러지면 남은 아군 +4/+4']},
 };
 const TRAIT_OF={hugo:['atk'],ajae:['vet'],jongryeong:['def','vet'],ttalgak:['tech'],seohyun:['atk'],drunk:['vet','comeback'],songstar:['def'],
   infibot:['def'],kumho:['def','vet'],percival:['atk'],yunhwan:['def'],jiseong:['comeback'],leesin:['atk'],adam:['tech'],sleepy:['dual'],
@@ -845,11 +860,12 @@ const board=makeArena($('board')),pboard=makeArena($('pboard'));
 const isSel=(src,i)=>sel&&sel.src===src&&sel.i===i?'sel':'';
 const COIN='<svg class="coin"><use href="#i-coin"/></svg>';
 function render(){
+  const myTr=traitCounts(me.team),owned=k=>me.team.some(p=>p&&p.key===k);
   $('stage').innerHTML=`라운드 <span class="num">${me.turn}</span>`;
   $('gold').textContent=me.gold;
   $('trophy').innerHTML=`<svg class="ico" style="width:15px;height:15px;color:var(--gold)"><use href="#i-trophy"/></svg><span class="num">${me.wins}</span>/10`;
   $('players').innerHTML=`<div class="pl me"><b>나</b><span class="num">${me.lives}</span><div class="bar"><i style="width:${me.lives*20}%"></i></div></div><div class="pl foe"><b>${foeName}</b><span></span><div class="bar"><i style="width:100%"></i></div></div>`;
-  $('shop').innerHTML=me.shop.pets.map((x,i)=>{const d=PETS[x.key];return`<div class="sc ${isSel('pet',i)} ${x.frozen?'frozen':''}" style="--tc:${TC[d.t]}" data-pet="${i}" role="button" aria-label="${d.n} ${d.t}코스트, 3골드"><img src="faces/${d.f||x.key}-face.png" alt="" draggable="false"><span class="st"><b>${x.atk}</b><b>${x.hp}</b></span><span class="tt">${(TRAIT_OF[x.key]||[]).map(t=>`<i style="background:${TRAITS[t].c}"></i>`).join('')}</span><span class="cb">${d.t}<small>코</small></span><div class="plate"><span>${d.n}</span></div></div>`}).join('')
+  $('shop').innerHTML=me.shop.pets.map((x,i)=>{const d=PETS[x.key];return`<div class="sc ${isSel('pet',i)} ${x.frozen?'frozen':''} ${owned(x.key)?'owned':''}" style="--tc:${TC[d.t]}" data-pet="${i}" role="button" aria-label="${d.n} ${d.t}코스트, 3골드${owned(x.key)?', 보드에 있음':''}"><img src="faces/${d.f||x.key}-face.png" alt="" draggable="false"><span class="st"><b>${x.atk}</b><b>${x.hp}</b></span><span class="tt">${(TRAIT_OF[x.key]||[]).map(t=>`<i class="${myTr[t]?'has':''}" style="--tc:${TRAITS[t].c}">${TRAITS[t].s}</i>`).join('')}</span>${owned(x.key)?'<span class="spark" aria-hidden="true"></span>':''}<span class="cb">${d.t}<small>코</small></span><div class="plate"><span>${d.n}</span></div></div>`}).join('')
     +'<div class="sep"></div>'
     +me.shop.food.map((x,i)=>{const f=FOODS[x.key];return`<div class="sc ${isSel('food',i)} ${x.frozen?'frozen':''}" style="--tc:${TC[f.t]}" data-food="${i}" role="button" aria-label="${f.n} 3골드"><div class="emo">${foodSvg(x.key,54)}</div><span class="cb">${f.t}<small>코</small></span><div class="plate"><span>${f.n}</span></div></div>`}).join('');
   let info='상점 카드를 보드 칸으로 끌어다 놓거나, 카드를 누른 뒤 칸을 누르세요. 같은 캐릭터 위에 놓으면 합쳐져요. 3마리면 ★★, 6마리면 ★★★.';
