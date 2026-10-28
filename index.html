@@ -1016,6 +1016,16 @@ function makeArena(cv){
     g.restore();u.L=L0;
   }
   function fighter(u,k,x,y,P,I,clip){
+    if(u.key==='bee'){   // 꿀벌: 팔다리 없이 날개를 파닥이며 둥실둥실 날아다닌다
+      const t=performance.now(),flap=Math.abs(Math.sin(t/38)),hy=-k*.75+Math.sin(t/260+u.uid)*k*.12,sz=k*.62;
+      g.save();g.translate(x+Math.sin(t/420+u.uid)*k*.08,y+hy);g.rotate((P.rot||0)+Math.sin(t/300)*.12);g.scale(P.sc||1,P.sc||1);
+      if(clip){g.rotate(clip.a);g.beginPath();g.rect(-k*3,clip.side<0?-k*3:0,k*6,k*3);g.clip();g.rotate(-clip.a)}
+      g.fillStyle='#e6f6ffcc';g.strokeStyle='#1d1309';g.lineWidth=k*.025;
+      for(const sd of [-1,1]){g.beginPath();g.ellipse(sd*sz*.22,-sz*.32,sz*.2,sz*(.06+.16*flap),sd*.5,0,7);g.fill();g.stroke()}
+      if(FOOD_IMG.bee.complete)g.drawImage(FOOD_IMG.bee,-sz/2,-sz/2,sz,sz);
+      const fl_=1-(t-u.flash)/200;if(fl_>0){g.globalCompositeOperation='lighter';g.globalAlpha*=fl_*.8;g.drawImage(FOOD_IMG.bee,-sz/2,-sz/2,sz,sz)}
+      g.restore();return;
+    }
     const col=TC[PETS[u.key].t],S=u.S,cr=(P.crouch||0)+(S.pose==='crouch'?.08:0),spread=S.pose==='wide'?1.6:1;
     g.save();g.translate(x,y);
     if(clip){g.rotate(clip.a);g.beginPath();g.rect(-k*3,clip.side<0?-k*3:0,k*6,k*3);g.clip();g.rotate(-clip.a)}
