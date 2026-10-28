@@ -227,6 +227,93 @@ button.wide{width:100%;min-height:58px;font-size:18px}
 }
 @keyframes rise{from{opacity:0;transform:translateY(14px) scale(.98);filter:blur(6px)}to{opacity:1;transform:none;filter:none}}
 
+/* 톱니바퀴 · 대화상자 공통 */
+.gear{width:40px;min-height:40px;padding:0;border-radius:50%}
+.gear .ico{width:20px;height:20px;transition:transform .4s cubic-bezier(.16,1,.3,1)}
+.gear:hover .ico{transform:rotate(60deg)}
+.dlg{width:min(92vw,440px);max-height:90vh;padding:0;border:1px solid var(--line-strong);border-radius:16px;color:var(--ink);
+  background:linear-gradient(180deg,#14303a 0%,#0b1a20 70%);box-shadow:0 30px 60px -20px #000}
+.dlg::backdrop{background:#02060ad0}
+.dlg form{display:flex;flex-direction:column}
+.dh{position:relative;padding:18px 20px 14px;border-bottom:1px solid var(--line)}
+.dh h2{margin:0;font:900 26px/1 var(--display);color:var(--gold-hi);letter-spacing:.02em}
+.dlg .x{position:absolute;right:10px;top:10px;z-index:2;width:38px;min-height:38px;padding:0;border-radius:50%;background:#0006}
+.dv{display:flex;flex-direction:column;gap:12px;padding:16px 20px 20px}
+.err{margin:0 20px 16px;color:#ff9aa8;font-size:13px;min-height:0}.err:empty{display:none}
+@media (prefers-reduced-motion:no-preference){.dlg[open]{animation:dlgIn .35s cubic-bezier(.16,1,.3,1)}}
+@keyframes dlgIn{from{opacity:0;transform:translateY(12px) scale(.97)}to{opacity:1;transform:none}}
+
+/* 설정 */
+.sets{display:flex;flex-direction:column;padding:6px 20px 10px}
+.set{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 0;border-bottom:1px solid #ffffff0d;cursor:pointer}
+.set span{display:flex;flex-direction:column;gap:2px}.set b{font-size:15px;color:var(--parch)}.set small{color:var(--muted);font-size:12px}
+.set.sub{padding:4px 0 12px;color:var(--muted);font-size:13px}
+.dlg form>.go{margin:6px 20px 20px;width:auto}
+input[role=switch]{appearance:none;flex:none;width:48px;height:28px;margin:0;border-radius:999px;background:#2a3b42;position:relative;cursor:pointer;transition:background-color .2s}
+input[role=switch]::before{content:"";position:absolute;left:3px;top:3px;width:22px;height:22px;border-radius:50%;background:#cfd8da;transition:transform .2s cubic-bezier(.16,1,.3,1)}
+input[role=switch]:checked{background:var(--gold)}input[role=switch]:checked::before{transform:translateX(20px);background:#fff}
+input[type=range]{flex:1;max-width:180px;accent-color:var(--gold)}
+.seg{display:inline-flex!important;flex-direction:row!important;gap:0!important;padding:3px;border-radius:999px;background:#0008}
+.seg button{min-height:32px;padding:0 14px;border:0;border-radius:999px;background:transparent}
+.seg button.on{background:var(--gold);color:var(--gold-ink);font-weight:800}
+
+/* PVP 버튼: 금빛 AI 대전과 구분되는 결투의 진홍 */
+button.pvp{position:relative;flex-direction:row;color:#fff;font-weight:900;font-size:20px;letter-spacing:.06em;border:0;border-radius:0;clip-path:var(--chamfer);
+  background:linear-gradient(180deg,#ff6b81 0%,#c8304f 55%,#8a1c38 100%)}
+button.pvp small{font:600 12px/1 var(--body);letter-spacing:0;opacity:.85;margin-left:4px}
+button.pvp:hover:not(:disabled){background:linear-gradient(180deg,#ff8597 0%,#d83b5b 55%,#9a2242 100%)}
+
+/* PVP 대화상자 */
+.pvpdlg .dh{background:linear-gradient(120deg,#5a1426 0%,transparent 60%)}
+.pvpdlg .dh h2{color:#fff;font-size:32px;letter-spacing:.12em}
+.pvpme{display:flex;align-items:center;flex-wrap:wrap;gap:6px 10px;margin-top:10px}
+.pvpme .rate{font-size:28px;color:var(--parch)}.pvpme .wl{width:100%;color:var(--muted);font-size:12px}
+.tier{display:inline-flex;align-items:center;padding:2px 8px;border-radius:5px;font-weight:800;font-size:12px;color:#0b0f10;background:var(--tc);white-space:nowrap}
+.tier.big{font-size:14px;padding:4px 10px}
+.tile{display:flex;align-items:center;gap:14px;width:100%;min-height:76px;padding:14px;text-align:left;border-radius:12px;
+  background:linear-gradient(180deg,#1b3843,#11262e);border:1px solid var(--line)}
+.tile>span:last-child{display:flex;flex-direction:column;gap:4px;flex:1;min-width:0}
+.tile b{font-size:17px;color:var(--parch)}.tile small{color:var(--muted);font-size:12.5px;font-weight:500;white-space:normal;line-height:1.4}
+.ti{flex:none;width:44px;height:44px;display:grid;place-items:center;border-radius:12px;background:#ff4d6d22;color:#ff8597}
+.ti .ico{width:22px;height:22px}
+button.tile:hover:not(:disabled){border-color:#ff6b8199}
+.joinrow{display:flex;gap:8px}
+#joinCode{flex:1;min-width:0;height:42px;padding:0 12px;border-radius:10px;border:1px solid var(--line-strong);background:#06101499;color:var(--parch);
+  font:800 18px/1 var(--display);letter-spacing:.3em;text-transform:uppercase}
+#joinCode::placeholder{font:500 13px var(--body);letter-spacing:0;color:#93a9ae}
+#joinCode:focus{outline:2px solid var(--gold-hi);outline-offset:1px}
+.rule{margin:0;color:var(--muted);font-size:12.5px;line-height:1.6}
+.lbl{margin:0;text-align:center;color:var(--muted);font-size:12px}
+.code{display:flex;justify-content:center;gap:8px}
+.code span{width:46px;height:58px;display:grid;place-items:center;border-radius:10px;background:#06101499;border:1px solid var(--line-strong);
+  font:900 30px/1 var(--display);color:var(--gold-hi)}
+#copyCode{align-self:center}
+.waiting{display:flex;align-items:center;justify-content:center;gap:10px;margin:4px 0 0;color:var(--parch);font-size:14px}
+.pulse{width:10px;height:10px;border-radius:50%;background:#ff6b81;box-shadow:0 2px 4px #000}
+button.ghost{background:transparent;border-color:transparent;color:var(--muted);align-self:center}
+.big{margin:4px 0 0;text-align:center;font:900 54px/1 var(--display);letter-spacing:.06em}
+.big.win{color:var(--gold-hi)}.big.lose{color:#ff8a94}
+.delta{display:flex;align-items:center;justify-content:center;gap:10px;font-size:22px;color:var(--muted)}
+.delta .now{color:var(--parch);font-size:30px}.delta b{font:900 18px/1 var(--display)}.delta b.up{color:#5ee0a8}.delta b.down{color:#ff8a94}
+.tierline{display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap}
+.promo{color:var(--gold-hi);font-weight:800;font-size:14px}
+
+/* 게임 중 PVP 표시 */
+.clock{margin-left:4px;padding:1px 7px;border-radius:999px;background:#0008;color:var(--parch);font:800 12px/1.4 var(--display)}
+.clock.low{background:#c8304f;color:#fff}
+.st8{grid-column:1/-1;color:var(--muted);font-size:10.5px}.st8.ok{color:#5ee0a8}
+
+/* 랭킹 탭 */
+.rtabs{display:flex;gap:4px;padding:3px;border-radius:999px;background:#0008}
+.rtabs button{min-height:32px;padding:0 14px;border:0;border-radius:999px;background:transparent;font-size:13px}
+.rtabs button.on{background:var(--gold);color:var(--gold-ink);font-weight:800}
+#rfAi{margin:-2px 0 10px}
+.pvprank .pos{width:28px;color:var(--muted)}
+.pvprank tr.podium .pos{color:var(--gold-hi);font-weight:900}
+.pvprank .score{font:800 15px/1 var(--display)!important;color:var(--parch)!important}
+.pvprank .wl{color:var(--muted);font-size:12px}
+.tiernote{margin:10px 0 0;color:var(--muted);font-size:11.5px;line-height:1.6}
+
 #toast{position:fixed;left:50%;bottom:24px;z-index:9;transform:translateX(-50%);padding:9px 16px;border-radius:10px;opacity:0;transition:opacity .2s;pointer-events:none;
   background:#0b1a20f2;border:1px solid var(--line-strong);color:var(--parch);font-size:13px;box-shadow:0 10px 24px -10px #000}
 #toast.on{opacity:1}
@@ -243,6 +330,13 @@ button.wide{width:100%;min-height:58px;font-size:18px}
   <symbol id="i-skip" viewBox="0 0 24 24"><path d="m5 4 10 8-10 8z"/><path d="M19 5v14"/></symbol>
   <symbol id="i-fast" viewBox="0 0 24 24"><path d="m3 5 8 7-8 7z"/><path d="m13 5 8 7-8 7z"/></symbol>
   <symbol id="i-trophy" viewBox="0 0 24 24"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0z"/><path d="M17 5h3v2a3 3 0 0 1-3 3M7 5H4v2a3 3 0 0 0 3 3"/></symbol>
+  <symbol id="i-gear" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+  <symbol id="i-door" viewBox="0 0 24 24"><path d="M14 4h4a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-4"/><path d="M10 17l5-5-5-5M15 12H3"/></symbol>
+  <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
+  <symbol id="i-copy" viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></symbol>
+  <symbol id="i-vs" viewBox="0 0 24 24"><path d="M3 5l4 14 4-14M21 7a4 4 0 0 0-4-2c-2 0-3.5 1-3.5 2.8 0 3.7 7.5 2.2 7.5 6.4 0 1.9-1.6 3.3-4 3.3a4.5 4.5 0 0 1-4-2"/></symbol>
   <symbol id="i-heart" viewBox="0 0 24 24"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/></symbol>
 </svg>
 <div id="prologue">
@@ -253,7 +347,7 @@ button.wide{width:100%;min-height:58px;font-size:18px}
   <p class="note">로그인하면 진행 상황과 기록이 저장돼요</p>
 </div>
 <section id="lobby" hidden>
-  <div class="top"><h1 class="brand">Auto Ping Pong</h1><span style="flex:1"></span><button id="logout">로그아웃</button></div>
+  <div class="top"><h1 class="brand">Auto Ping Pong</h1><span style="flex:1"></span><button id="logout">로그아웃</button><button class="gear" aria-label="설정"><svg class="ico"><use href="#i-gear"/></svg></button></div>
   <div id="account"></div>
   <div class="play">
     <button id="resume" class="go wide" hidden><svg class="ico"><use href="#i-fast"/></svg><span>이어하기</span></button>
@@ -262,14 +356,15 @@ button.wide{width:100%;min-height:58px;font-size:18px}
       <p class="hint">난이도를 고르면 바로 시작해요</p>
       <div class="dgrid"><button class="dbtn" data-diff="easy" style="--dc:#17b98a"><b>이지</b><small>골드를 덜 받고, 아무 캐릭터나 사요</small></button><button class="dbtn" data-diff="hard" style="--dc:#3389e6"><b>하드</b><small>나와 같은 규칙으로 꼼꼼하게 팀을 짜요</small></button><button class="dbtn" data-diff="extreme" style="--dc:#c24de2"><b>익스트림</b><small>골드 +2, 매 턴 랜덤 2명 +1/+1</small></button><button class="dbtn" data-diff="ultra" style="--dc:#ff5470"><b>울트라</b><small>골드 +4, 매 턴 모두 +1/+1</small></button></div>
     </div>
+    <button id="pvpBtn" class="wide pvp"><svg class="ico"><use href="#i-vs"/></svg>PVP<small>친구와 실시간 대결</small></button>
   </div>
   <section class="rankbox" aria-labelledby="rank-h">
-    <div class="rankhead"><h2 id="rank-h">랭킹</h2><div class="rf"><button data-rank="all" class="on">전체</button><button data-rank="easy">이지</button><button data-rank="hard">하드</button><button data-rank="extreme">익스트림</button><button data-rank="ultra">울트라</button></div></div>
+    <div class="rankhead"><h2 id="rank-h">랭킹</h2><div class="rtabs" role="tablist"><button data-rtab="ai" class="on" role="tab">AI 기록</button><button data-rtab="pvp" role="tab">PVP 랭킹</button></div></div><div class="rf" id="rfAi"><button data-rank="all" class="on">전체</button><button data-rank="easy">이지</button><button data-rank="hard">하드</button><button data-rank="extreme">익스트림</button><button data-rank="ultra">울트라</button></div>
     <div id="rank"></div>
   </section>
 </section>
 <main hidden>
-  <div class="top"><h1 class="brand">Auto Ping Pong</h1><span id="stage"></span><button id="toLobby">로비</button></div>
+  <div class="top"><h1 class="brand">Auto Ping Pong</h1><span id="stage"></span><button id="toLobby">로비</button><button class="gear" aria-label="설정"><svg class="ico"><use href="#i-gear"/></svg></button></div>
   <div class="wrap"><canvas id="board" class="board"></canvas><div id="caption" class="caption"></div><div id="traits" class="traits"></div><div class="right"><div id="players"></div><div id="ftraits" class="traits foe"></div></div></div>
   <div id="info"></div>
   <div id="shopbar">
@@ -287,10 +382,48 @@ button.wide{width:100%;min-height:58px;font-size:18px}
   </div>
   <div id="bctl" hidden><button id="skip"><svg class="ico"><use href="#i-skip"/></svg>건너뛰기</button><button id="speed"><svg class="ico"><use href="#i-fast"/></svg><span>2배속</span></button><button id="next" class="go" hidden>다음 턴</button></div>
 </main>
+<dialog id="pvpDlg" class="dlg pvpdlg" aria-labelledby="pvp-h">
+  <button id="pvpX" class="x" aria-label="닫기"><svg class="ico"><use href="#i-x"/></svg></button>
+  <header class="dh"><h2 id="pvp-h">PVP</h2><div id="pvpMe" class="pvpme"></div></header>
+  <div data-view="menu" class="dv">
+    <button id="mkRoom" class="tile"><span class="ti"><svg class="ico"><use href="#i-plus"/></svg></span><span><b>방 만들기</b><small>방 코드를 친구에게 알려 주세요</small></span></button>
+    <div class="tile join"><span class="ti"><svg class="ico"><use href="#i-door"/></svg></span><span class="jw"><b>방 참가</b><span class="joinrow"><input id="joinCode" maxlength="5" placeholder="코드 5자리" autocomplete="off" autocapitalize="characters" spellcheck="false" aria-label="방 코드"><button id="joinBtn" class="go">참가</button></span></span></div>
+    <p class="rule">두 사람이 같은 라운드에 동시에 팀을 짜고, 둘 다 준비되면 같은 전투를 함께 봐요. 라운드마다 75초. 트로피 10개를 먼저 모으거나 상대 체력을 0으로 만들면 승리하고, PVP 점수가 오르내려요.</p>
+  </div>
+  <div data-view="wait" class="dv" hidden>
+    <p class="lbl">방 코드</p>
+    <div id="roomCode" class="code" aria-live="polite"></div>
+    <button id="copyCode"><svg class="ico"><use href="#i-copy"/></svg>코드 복사</button>
+    <p class="waiting"><span class="pulse"></span>상대가 들어오기를 기다리는 중</p>
+    <button id="cancelRoom" class="ghost">방 닫기</button>
+  </div>
+  <div data-view="result" class="dv" hidden><p id="resBig" class="big"></p><div id="resRate"></div><button id="resOk" class="go">확인</button></div>
+  <p id="pvpErr" class="err" role="alert"></p>
+</dialog>
+<dialog id="setDlg" class="dlg" aria-labelledby="set-h">
+  <form method="dialog">
+    <header class="dh"><h2 id="set-h">설정</h2></header>
+    <div class="sets">
+      <label class="set"><span><b>배경음악</b><small>게임 분위기 음악</small></span><input type="checkbox" role="switch" data-set="bgm"></label>
+      <label class="set sub"><span>음악 크기</span><input type="range" min="0" max="1" step="0.05" data-set="bgmVol"></label>
+      <label class="set"><span><b>효과음</b><small>타격 · 필살기 · 구매 소리</small></span><input type="checkbox" role="switch" data-set="sfx"></label>
+      <label class="set sub"><span>효과음 크기</span><input type="range" min="0" max="1" step="0.05" data-set="sfxVol"></label>
+      <label class="set"><span><b>화려한 이펙트</b><small>아우라 · 입자 · 번쩍임 · 화면 확대</small></span><input type="checkbox" role="switch" data-set="fx"></label>
+      <label class="set"><span><b>화면 흔들림</b><small>강한 공격에 화면이 흔들려요</small></span><input type="checkbox" role="switch" data-set="shake"></label>
+      <label class="set"><span><b>피해 숫자</b><small>맞을 때 피해량 표시</small></span><input type="checkbox" role="switch" data-set="dmg"></label>
+      <div class="set"><span><b>기본 전투 속도</b></span><span class="seg"><button type="button" data-speed="1">1배속</button><button type="button" data-speed="2">2배속</button></span></div>
+    </div>
+    <button class="go wide" value="close">닫기</button>
+  </form>
+</dialog>
 <div id="toast" role="status" aria-live="polite"></div>
 <script>
-const R=a=>a[Math.floor(Math.random()*a.length)];
-const shuffle=a=>a.map(x=>[Math.random(),x]).sort((p,q)=>p[0]-q[0]).map(x=>x[1]);
+// 전투 난수: 평소엔 Math.random, PVP 전투는 두 사람이 같은 씨앗으로 똑같이 굴린다
+let RNG=Math.random;
+function seeded(a){return()=>{a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+function battleSeeded(ta,tb,seed){const o=RNG;RNG=seeded(seed);try{return battle(ta,tb)}finally{RNG=o}}
+const R=a=>a[Math.floor(RNG()*a.length)];
+const shuffle=a=>a.map(x=>[RNG(),x]).sort((p,q)=>p[0]-q[0]).map(x=>x[1]);
 const lvlOf=xp=>xp>=5?3:xp>=2?2:1;
 const cap=n=>Math.min(50,n);
 const buff=(p,a,h)=>{if(p){p.atk=cap(p.atk+a);p.hp=cap(p.hp+h)}};
@@ -316,7 +449,7 @@ const PETS={
   aribeom:T('매혹범',4,3,4,L=>`전투 시작: 공격력이 가장 높은 적 공격 -${2*L}`,{start(c,L){const a=alive(c.foe);if(a.length){const t=a.reduce((m,p)=>p.atk>m.atk?p:m);t.atk=Math.max(1,t.atk-2*L)}}}),
   hyde:T('하이드',5,4,4,L=>`아군 기절: +${2*L}/+${L}`,{friendFaint(c,L){buff(c.me,2*L,L)}}),
   godyung:T('갓융자',5,6,3,L=>`적 처치: 맨 앞 적에게 ${4*L} 피해`,{kill(c,L){dmg(alive(c.foe)[0],4*L,c.me)}}),
-  gambler:T('올인 도박사',5,5,5,L=>`전투 시작: ${40+10*L}% 확률로 공·체 2배, 실패하면 절반`,{start(c,L){const p=c.me;if(Math.random()<.4+.1*L){p.atk=cap(p.atk*2);p.hp=cap(p.hp*2)}else{p.atk=Math.ceil(p.atk/2);p.hp=Math.ceil(p.hp/2)}}}),
+  gambler:T('올인 도박사',5,5,5,L=>`전투 시작: ${40+10*L}% 확률로 공·체 2배, 실패하면 절반`,{start(c,L){const p=c.me;if(RNG()<.4+.1*L){p.atk=cap(p.atk*2);p.hp=cap(p.hp*2)}else{p.atk=Math.ceil(p.atk/2);p.hp=Math.ceil(p.hp/2)}}}),
   ninja:T('맹타치',5,5,4,L=>`전투 시작: 맨 뒤 적에게 ${5*L} 피해`,{start(c,L){const a=alive(c.foe);dmg(a[a.length-1],5*L,c.me)}}),
   jh:T('지킬앤 하이범',6,6,7,L=>`전투 시작: 랜덤 적에게 공격력 절반 피해 ×${L}`,{f:'jekyll-hyde',start(c,L){for(let i=0;i<L;i++)dmg(R(alive(c.foe)),Math.ceil(c.me.atk/2),c.me)}}),
   pastor:T('허허 목사',6,4,8,L=>`기절: 모든 아군 +${2*L}/+${2*L}`,{faint(c,L){c.mine.forEach(f=>buff(f,2*L,2*L))}}),
@@ -430,6 +563,7 @@ function merge(S,t,src){t.atk=cap(Math.max(t.atk,src.atk)+1);t.hp=cap(Math.max(t
 function buyPet(S,i,slot){
   const it=S.shop.pets[i],t=S.team[slot];
   if(S.gold<3)return'골드가 부족해요';
+  if(S.human)Sound.sfx('coin');
   if(t&&(t.key!==it.key||t.xp>=5))return'같은 캐릭터끼리만 합칠 수 있어요';
   S.gold-=3;S.shop.pets.splice(i,1);
   const p=mk(it.key,it.atk,it.hp);
@@ -469,8 +603,8 @@ function botPlay(S,careless=false){
     const team=S.team,sp=S.shop.pets,empty=team.indexOf(null);
     if(S.gold>=3){
       const mi=sp.findIndex(x=>team.some(p=>p&&p.key===x.key&&p.xp<5));
-      if(mi>=0&&!(careless&&Math.random()<.6)){buyPet(S,mi,team.findIndex(p=>p&&p.key===sp[mi].key&&p.xp<5));continue}
-      const best=sp.map((x,i)=>[careless?Math.random():PETS[x.key].t+Math.random(),i]).sort((a,b)=>b[0]-a[0])[0];
+      if(mi>=0&&!(careless&&RNG()<.6)){buyPet(S,mi,team.findIndex(p=>p&&p.key===sp[mi].key&&p.xp<5));continue}
+      const best=sp.map((x,i)=>[careless?RNG():PETS[x.key].t+RNG(),i]).sort((a,b)=>b[0]-a[0])[0];
       if(best&&empty>=0){buyPet(S,best[1],empty);continue}
       if(best){const weak=team.reduce((m,p)=>score(p)<score(m)?p:m);if(PETS[sp[best[1]].key].t>PETS[weak.key].t){sell(S,team.indexOf(weak));continue}}
       if(S.shop.food.length&&team.some(Boolean)){buyFood(S,0,R(team.filter(Boolean)));continue}
@@ -552,6 +686,66 @@ function battle(ta,tb){
   return{frames:B.frames,r};
 }
 
+// ---------- 설정 (이 기기에만 저장) ----------
+const SET={bgm:true,bgmVol:.5,sfx:true,sfxVol:.7,fx:true,shake:true,dmg:true,speed:1};
+try{Object.assign(SET,JSON.parse(localStorage.getItem('app-settings')||'{}'))}catch{}
+function saveSet(){try{localStorage.setItem('app-settings',JSON.stringify(SET))}catch{}}
+
+// ---------- 소리: 배경음악 + 효과음을 Web Audio로 직접 만든다 (파일 없음) ----------
+// 배경음악: 112BPM 가단조 Am-F-C-G. 패드 · 베이스 · 16분 아르페지오 · 킥/하이햇, 그리고 탁구공 튀는 소리(1.9kHz 짧은 핑)
+const Sound=(()=>{
+  let ctx=null,master,music,sfxG,timer=null,step=0,nextT=0,lastHit=0;
+  const S16=60/112/4,CH=[[57,60,64],[53,57,60],[48,52,55],[55,59,62]],BASS=[45,41,48,43];
+  const LEAD=[76,74,72,74,72,71,69,0,69,71,72,76,74,72,71,0],hz=m=>440*2**((m-69)/12);
+  function ensure(){
+    if(ctx)return;const AC=window.AudioContext||window.webkitAudioContext;if(!AC)return;
+    ctx=new AC();master=ctx.createGain();music=ctx.createGain();sfxG=ctx.createGain();
+    const comp=ctx.createDynamicsCompressor();music.connect(master);sfxG.connect(master);master.connect(comp);comp.connect(ctx.destination);apply();
+  }
+  function apply(){if(!ctx)return;music.gain.setTargetAtTime(SET.bgm?SET.bgmVol*.32:0,ctx.currentTime,.05);sfxG.gain.setTargetAtTime(SET.sfx?SET.sfxVol*.6:0,ctx.currentTime,.02)}
+  function tone(type,f,t,dur,vol,dest,o={}){
+    const osc=ctx.createOscillator(),g=ctx.createGain(),a=o.attack||.005;osc.type=type;osc.frequency.setValueAtTime(f,t);
+    if(o.slide)osc.frequency.exponentialRampToValueAtTime(o.slide,t+dur);
+    g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(vol,t+a);g.gain.exponentialRampToValueAtTime(.0001,t+dur);
+    let n=osc;if(o.filter){const fl=ctx.createBiquadFilter();fl.type='lowpass';fl.frequency.value=o.filter;osc.connect(fl);n=fl}
+    n.connect(g);g.connect(dest);osc.start(t);osc.stop(t+dur+.05);
+  }
+  let nbuf=null;
+  function noise(t,dur,vol,dest,hp){
+    if(!nbuf){nbuf=ctx.createBuffer(1,ctx.sampleRate*.5,ctx.sampleRate);const d=nbuf.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1}
+    const s=ctx.createBufferSource(),fl=ctx.createBiquadFilter(),g=ctx.createGain();s.buffer=nbuf;fl.type='highpass';fl.frequency.value=hp;
+    g.gain.setValueAtTime(vol,t);g.gain.exponentialRampToValueAtTime(.0001,t+dur);s.connect(fl);fl.connect(g);g.connect(dest);s.start(t);s.stop(t+dur+.02);
+  }
+  function schedule(){
+    while(nextT<ctx.currentTime+.12){
+      const st=step%64,bar=st>>4,b=st%16,t=nextT,c=CH[bar];
+      if(b===0)c.forEach(m=>tone('sawtooth',hz(m),t,S16*16,.045,music,{attack:.3,filter:900}));
+      if(b%2===0)tone('triangle',hz(BASS[bar]+(b%8===6?12:0)),t,S16*1.8,.22,music);
+      tone('square',hz(c[b%3]+12+(b%8>=4?12:0)),t,S16*.9,.03,music,{filter:2600});
+      if(b%4===0)tone('sine',150,t,.2,.5,music,{slide:45});
+      if(b%4===2)noise(t,.06,.1,music,7000);
+      if(b===6||b===14){tone('sine',1900,t,.06,.1,music);tone('sine',1750,t+S16*1.3,.05,.07,music)}
+      if(st%4===0&&LEAD[(st>>2)%16])tone('triangle',hz(LEAD[(st>>2)%16]),t,S16*3.6,.07,music,{attack:.02});
+      nextT+=S16;step++;
+    }
+  }
+  return{
+    unlock(){ensure();if(!ctx)return;if(ctx.state==='suspended')ctx.resume();if(!timer){nextT=ctx.currentTime+.1;timer=setInterval(schedule,25)}},
+    apply,
+    sfx(kind,L=1){
+      if(!ctx||!SET.sfx)return;const t=ctx.currentTime;
+      if(kind==='hit'){if(t-lastHit<.05)return;lastHit=t;noise(t,.05,.22,sfxG,1500);tone('sine',260+L*70,t,.12,.22,sfxG,{slide:90})}
+      if(kind==='ult'){tone('sawtooth',220,t,.6,.1,sfxG,{slide:880,filter:3000});tone('sine',1320,t+.45,.3,.14,sfxG)}
+      if(kind==='coin'){tone('square',1320,t,.06,.07,sfxG,{filter:4000});tone('square',1760,t+.06,.1,.07,sfxG,{filter:4000})}
+      if(kind==='win')[72,76,79,84].forEach((m,i)=>tone('triangle',hz(m),t+i*.1,.3,.18,sfxG));
+      if(kind==='lose')[67,63,60].forEach((m,i)=>tone('triangle',hz(m),t+i*.15,.35,.16,sfxG));
+      if(kind==='start')[60,67,72].forEach((m,i)=>tone('square',hz(m),t+i*.08,.15,.07,sfxG,{filter:2500}));
+      if(kind==='tap')tone('sine',1900,t,.05,.08,sfxG);
+    },
+  };
+})();
+document.addEventListener('pointerdown',()=>Sound.unlock(),{once:true});
+
 // ---------- 보드 (롤토체스식 육각 보드 위에서 탁구채를 든 캐릭터가 싸운다) ----------
 const $=id=>document.getElementById(id);
 const TC=['#6b7280','#a3acb5','#17b98a','#3389e6','#c24de2','#f5b335','#ff5470'];   // 티어 색 (0 = 소환물)
@@ -602,10 +796,10 @@ function makeArena(cv){
   function geo(){const wMax=W*.92/5.6,rh=Math.min(H*.77/4,wMax*1.3);return{wMax,rh,top:(H-4*rh)/2+H*.04}}
   function tile(c,r){const {wMax,rh,top}=geo(),p=.84+.16*r/3,w=Math.min(wMax,rh*1.25)*p;return{x:W/2+(c-2+(r%2?.25:-.25))*w,y:top+(r+.5)*rh,w}}
   const pos=(side,i)=>{const[dr,c]=SLOT[Math.min(i,4)];return tile(c,side==='A'?2+dr:1-dr)};
-  const spawn=o=>{if(parts.length<700)parts.push({born:performance.now(),g:0,drag:1,...o})};
-  function shake(a,ms){if(reduced)return;cam.shA=Math.max(cam.shA,a);cam.shU=performance.now()+ms}
-  function flash(c,a,ms){cam.flC=c;cam.flA=a;cam.flD=ms;cam.flU=performance.now()+ms}
-  function zoom(x,y,a,ms){if(reduced)return;Object.assign(cam,{zx:x,zy:y,zA:a,zT:performance.now(),zD:ms})}
+  const spawn=o=>{if(SET.fx&&parts.length<700)parts.push({born:performance.now(),g:0,drag:1,...o})};
+  function shake(a,ms){if(reduced||!SET.shake||!SET.fx)return;cam.shA=Math.max(cam.shA,a);cam.shU=performance.now()+ms}
+  function flash(c,a,ms){if(!SET.fx)return;cam.flC=c;cam.flA=a;cam.flD=ms;cam.flU=performance.now()+ms}
+  function zoom(x,y,a,ms){if(reduced||!SET.fx)return;Object.assign(cam,{zx:x,zy:y,zA:a,zT:performance.now(),zD:ms})}
 
   // ----- 유닛 상태 -----
   function upsert(side,i,p,now){
@@ -613,7 +807,7 @@ function makeArena(cv){
     if(!u){const P=pos(side,i);u={uid:p.uid,key:p.key,side,x:P.x,y:P.y,w:P.w,hp:p.hp,atk:p.atk,mx:p.mx||p.hp,L:p.L||1,perk:p.perk,born:now,dieT:0,flash:-1e9,act:null,S:styleOf(p.key)};U.set(p.uid,u)}
     u.idx=i;u.next=p;return u;
   }
-  function float(u,text,color,size=1){fl.push({x:u.x,y:u.y-u.w*1.6,text,color,size,t:performance.now()})}
+  function float(u,text,color,size=1){if(!SET.dmg&&/^[-막]/.test(text))return;fl.push({x:u.x,y:u.y-u.w*1.6,text,color,size,t:performance.now()})}
   function apply(u,p,now,show){
     const da=p.atk-u.atk,dh=p.hp-u.hp;
     if(show&&(da||dh)&&p.hp>0){float(u,`${da<0?'':'+'}${da}/${dh<0?'':'+'}${dh}`,'#4ade80',.85);if(da>0||dh>0)buffFx(u)}
@@ -624,7 +818,7 @@ function makeArena(cv){
   function hit(e,now){
     if(e.done)return;e.done=true;const t=e.t;if(!t)return;
     const s=e.s,L=s?s.L:1,S=s?s.S:{c:'#c084fc',fx:'spark'},k=t.w*1.05;
-    apply(t,t.next,now,false);t.flash=now;
+    apply(t,t.next,now,false);t.flash=now;Sound.sfx('hit',e.ult?3:L);
     if(t.hp<=0){t.killL=L;t.killA=s?Math.atan2(t.y-s.y,t.x-s.x):0}
     const fa=s?Math.atan2(t.y-s.y,t.x-s.x):Math.PI/2;
     if(e.ult)impact(e.ult.fx,t.x,t.y-k*.65,e.ult.c,Math.max(3,L),fa,k);else impact(S.fx,t.x,t.y-k*.65,S.c,L,fa,k);
@@ -651,7 +845,7 @@ function makeArena(cv){
       if(t&&kind)proj.push({s,t,kind,t0:now+Dk*(melee?.35:.25),t1:now+Dk*imp,col:s?s.S.c:'#c084fc',L,trail:[]});
       fx.push({s,t,n:e.n,melee,hit:now+Dk*imp});
     });
-    if(ult)banner={text:ult.n,col:ult.c,t:now+Dk*.12};
+    if(ult){banner={text:ult.n,col:ult.c,t:now+Dk*.12};Sound.sfx('ult')}
     if(cap)cap.textContent=f.msg;
   }
 
@@ -742,7 +936,7 @@ function makeArena(cv){
   function hexPath(x,y,r){g.beginPath();for(let k=0;k<6;k++){const a=Math.PI/3*k+Math.PI/6;g.lineTo(x+Math.cos(a)*r,y+Math.sin(a)*r*.62)}g.closePath()}
   function line(x1,y1,x2,y2){g.beginPath();g.moveTo(x1,y1);g.lineTo(x2,y2);g.stroke()}
   function auraBack(u,k,x,y,now,charge){
-    if(u.L<2&&charge<=0)return;
+    if(!SET.fx||u.L<2&&charge<=0)return;
     const L0=u.L;if(u.act?.type==='ult'&&charge>0)u.L=3;
     g.save();g.globalCompositeOperation='lighter';
     const pulse=1+Math.sin(now/180)*.08,glow=(u.L>=3?1.25:.8)+charge*.9;
@@ -944,10 +1138,10 @@ const isSel=(src,i)=>sel&&sel.src===src&&sel.i===i?'sel':'';
 const COIN='<svg class="coin"><use href="#i-coin"/></svg>';
 function render(){
   const myTr=traitCounts(me.team),owned=k=>me.team.some(p=>p&&p.key===k);
-  $('stage').innerHTML=`<span style="color:${DIFFS[me.diff]?.c}">${DIFFS[me.diff]?.n||''}</span> 라운드 <span class="num">${me.turn}</span>`;
+  $('stage').innerHTML=me.pvp&&pvp?pvpStage():`<span style="color:${DIFFS[me.diff]?.c}">${DIFFS[me.diff]?.n||''}</span> 라운드 <span class="num">${me.turn}</span>`;
   $('gold').textContent=me.gold;
   $('trophy').innerHTML=`<svg class="ico" style="width:15px;height:15px;color:var(--gold)"><use href="#i-trophy"/></svg><span class="num">${me.wins}</span>/10`;
-  $('players').innerHTML=`<div class="pl me"><b>나</b><span class="num">${me.lives}</span><div class="bar"><i style="width:${me.lives*20}%"></i></div></div><div class="pl foe"><b>${foeName}</b><span></span><div class="bar"><i style="width:100%"></i></div></div>`;
+  $('players').innerHTML=`<div class="pl me"><b>나</b><span class="num">${me.lives}</span><div class="bar"><i style="width:${me.lives*20}%"></i></div></div><div class="pl foe"><b>${foeName}</b>${me.pvp&&pvp?`<span class="num">${pvp.oppLives}</span><small class="st8 ${oppReady()?'ok':''}">${oppReady()?'준비 완료':'팀 정하는 중'}</small><div class="bar"><i style="width:${pvp.oppLives*20}%"></i></div>`:'<span></span><div class="bar"><i style="width:100%"></i></div>'}</div>`;
   $('shop').innerHTML=me.shop.pets.map((x,i)=>{const d=PETS[x.key];return`<div class="sc ${isSel('pet',i)} ${x.frozen?'frozen':''} ${owned(x.key)?'owned':''} ${x.bonus?'bonus':''}" style="--tc:${TC[d.t]}" data-pet="${i}" role="button" aria-label="${d.n} ${d.t}코스트, 3골드${owned(x.key)?', 보드에 있음':''}${x.bonus?', 레벨업 보너스':''}"><img src="faces/${d.f||x.key}-face.png" alt="" draggable="false"><span class="st"><b>${x.atk}</b><b>${x.hp}</b></span><span class="tt">${(TRAIT_OF[x.key]||[]).map(t=>`<i class="${myTr[t]?'has':''}" style="--tc:${TRAITS[t].c}">${TRAITS[t].s}</i>`).join('')}</span>${owned(x.key)?'<span class="spark" aria-hidden="true"></span>':''}${x.bonus?'<span class="bonus-tag">레벨업 보너스</span>':''}<span class="cb">${d.t}<small>코</small></span><div class="plate"><span>${d.n}</span></div></div>`}).join('')
     +'<div class="sep"></div>'
     +me.shop.food.map((x,i)=>{const f=FOODS[x.key];return`<div class="sc ${isSel('food',i)} ${x.frozen?'frozen':''}" style="--tc:${TC[f.t]}" data-food="${i}" role="button" aria-label="${f.n} 3골드"><div class="emo">${foodSvg(x.key,54)}</div><span class="cb">${f.t}<small>코</small></span><div class="plate"><span>${f.n}</span></div></div>`}).join('');
@@ -1030,6 +1224,7 @@ $('sell').onclick=()=>{sell(me,sel.i);sel=null;render()};
 $('speed').onclick=()=>{fast=!fast;board.speed(fast?2:1);$('speed').querySelector('span').textContent=fast?'1배속':'2배속'};
 $('skip').onclick=()=>board.skip();
 $('end').onclick=()=>{
+  if(me.pvp)return pvpSubmit();
   if(!me.team.some(Boolean))return toast('캐릭터를 한 명 이상 보드에 놓으세요');
   sel=null;endTurn(me);
   const {frames,r}=battle(me.team,bot.team);
@@ -1064,7 +1259,7 @@ function showScreen(sc){   // prologue · lobby · game
   if(sc==='prologue'){pboard.start();demo()}
   document.querySelector('main').classList.remove('battling');
   if(sc==='game'){mode='shop';$('shopbar').hidden=$('info').hidden=false;$('bctl').hidden=true;board.start();render()}
-  if(sc==='lobby'){$('diffs').hidden=true;$('resume').hidden=!started();if(started())$('resume').querySelector('span').textContent=`이어하기 · ${DIFFS[me.diff]?.n||'하드'} 라운드 ${me.turn}`;loadRank()}
+  if(sc==='lobby'){$('diffs').hidden=true;$('resume').hidden=!started();loadMyPvp();if(started())$('resume').querySelector('span').textContent=`이어하기 · ${DIFFS[me.diff]?.n||'하드'} 라운드 ${me.turn}`;loadRank()}
 }
 
 // ---------- Google 로그인 · Firestore 저장 (autopets/{uid} 한 문서) ----------
@@ -1079,7 +1274,7 @@ function showAccount(){
 }
 async function initFirebase(){
   if(!FIREBASE_CONFIG)return;
-  const [app,auth,fs]=await Promise.all(['firebase-app.js','firebase-auth.js','firebase-firestore-lite.js'].map(f=>import(FB+f)));
+  const [app,auth,fs]=await Promise.all(['firebase-app.js','firebase-auth.js','firebase-firestore.js'].map(f=>import(FB+f)));
   const a=app.initializeApp(FIREBASE_CONFIG);
   fb={auth:auth.getAuth(a),A:auth,db:fs.getFirestore(a),F:fs};
   auth.onAuthStateChanged(fb.auth,async u=>{
@@ -1098,7 +1293,7 @@ async function initFirebase(){
   });
 }
 async function save(){
-  if(!fb||!user)return;
+  if(!fb||!user||me?.pvp)return;
   const {F,db}=fb;
   try{await F.setDoc(F.doc(db,'autopets',user.uid),{name:(user.displayName||'').slice(0,40),run:started()?JSON.stringify({me,bot,foeName,uid}):'',...stats,at:F.serverTimestamp()})}
   catch(e){console.error(e);toast('저장하지 못했어요')}
@@ -1108,11 +1303,13 @@ async function record(result,wins,diff){   // 랭킹 기록: 끝난 판마다 �
   try{await F.addDoc(F.collection(db,'autopets_rank'),{uid:user.uid,name:(user.displayName||'플레이어').slice(0,20),diff:diff||'hard',result,wins,at:F.serverTimestamp()})}
   catch(e){console.error(e);toast('랭킹에 기록하지 못했어요')}
 }
-let rankFilter='all';
+let rankFilter='all',rankTab='ai';
 async function loadRank(){
   const box=$('rank');if(!fb||!user){box.innerHTML='<p class="empty">로그인하면 랭킹을 볼 수 있어요</p>';return}
   box.innerHTML='<p class="empty">불러오는 중…</p>';
   const {F,db}=fb;
+  document.querySelectorAll('[data-rtab]').forEach(x=>x.classList.toggle('on',x.dataset.rtab===rankTab));$('rfAi').hidden=rankTab!=='ai';
+  if(rankTab==='pvp')return loadPvpRank(box);
   try{
     const q=rankFilter==='all'?F.query(F.collection(db,'autopets_rank'),F.orderBy('at','desc'),F.limit(30)):F.query(F.collection(db,'autopets_rank'),F.where('diff','==',rankFilter),F.limit(60));
     const rows=(await F.getDocs(q)).docs.map(d=>d.data()).filter(r=>r.at).sort((a,b)=>b.at.toMillis()-a.at.toMillis()).slice(0,30);
@@ -1122,11 +1319,181 @@ async function loadRank(){
     box.innerHTML=`<table><thead><tr><th>닉네임</th><th>난이도</th><th>날짜 · 시간</th><th>결과</th></tr></thead><tbody>${rows.map(r=>`<tr class="${r.uid===user.uid?'mine':''}"><td>${esc(r.name)}</td><td><span class="dtag" style="--dc:${DIFFS[r.diff]?.c}">${DIFFS[r.diff]?.n||r.diff}</span></td><td class="num">${when(r.at)}</td><td><span class="res ${r.result}">${r.result==='win'?'승리':'패배'}</span><small> 트로피 ${r.wins}</small></td></tr>`).join('')}</tbody></table>`;
   }catch(e){console.error(e);box.innerHTML='<p class="empty">랭킹을 불러오지 못했어요</p>'}
 }
+async function loadPvpRank(box){   // PVP 전체 랭킹: 점수 높은 순 50명
+  const {F,db}=fb,esc=t=>String(t).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'})[c]);
+  try{
+    const rows=(await F.getDocs(F.query(F.collection(db,'autopets_pvp'),F.orderBy('rating','desc'),F.limit(50)))).docs.map(d=>({id:d.id,...d.data()}));
+    if(!rows.length){box.innerHTML='<p class="empty">아직 PVP 기록이 없어요. 첫 승부의 주인공이 되어 보세요.</p>';return}
+    box.innerHTML=`<table class="pvprank"><thead><tr><th>#</th><th>닉네임</th><th>부수</th><th>점수</th><th>전적</th></tr></thead><tbody>${rows.map((r,i)=>`<tr class="${r.id===user.uid?'mine':''} ${i<3?'podium':''}"><td class="pos num">${i+1}</td><td>${esc(r.name)}</td><td>${tierTag(r.rating)}</td><td class="num score">${r.rating}</td><td class="wl">${r.win}승 ${r.lose}패</td></tr>`).join('')}</tbody></table><p class="tiernote">점수 1000점 7부에서 시작해요. 1000점 아래는 초심부, 1100 6부 · 1200 5부 · 1300 4부 · 1400 3부 · 1600 2부 · 1800 1부 · 2000 선수부.</p>`;
+  }catch(e){console.error(e);box.innerHTML='<p class="empty">PVP 랭킹을 불러오지 못했어요</p>'}
+}
+document.addEventListener('click',e=>{const b=e.target.closest('[data-rtab]');if(!b)return;rankTab=b.dataset.rtab;loadRank()});
 document.addEventListener('click',e=>{const b=e.target.closest('[data-rank]');if(!b)return;rankFilter=b.dataset.rank;document.querySelectorAll('[data-rank]').forEach(x=>x.classList.toggle('on',x===b));loadRank()});
 document.addEventListener('click',e=>{const b=e.target.closest('[data-diff]');if(b)startGame(b.dataset.diff)});
-$('aiBtn').onclick=()=>{$('diffs').hidden=!$('diffs').hidden};
+$('aiBtn').onclick=()=>{Sound.sfx('tap');$('diffs').hidden=!$('diffs').hidden};
+$('pvpBtn').onclick=openPvp;$('mkRoom').onclick=createRoom;$('joinBtn').onclick=joinRoom;$('cancelRoom').onclick=cancelRoom;
+$('joinCode').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();joinRoom()}});
+$('copyCode').onclick=()=>{navigator.clipboard?.writeText($('roomCode').dataset.code).then(()=>toast('코드를 복사했어요'),()=>toast('복사하지 못했어요'))};
+$('pvpX').onclick=()=>{if(pvp&&!pvp.started)cancelRoom();$('pvpDlg').close()};
+$('resOk').onclick=()=>$('pvpDlg').close();
+$('pvpDlg').addEventListener('cancel',e=>{if(pvp&&!pvp.started)cancelRoom()});
 $('resume').onclick=()=>startGame();
-$('toLobby').onclick=()=>{save();showScreen('lobby')};
+$('toLobby').onclick=async()=>{if(me.pvp){await quitPvp();return}save();showScreen('lobby')};
+// ---------- 설정 창 ----------
+function bindSettings(){
+  document.querySelectorAll('[data-set]').forEach(el=>{
+    const k=el.dataset.set;
+    if(el.type==='checkbox')el.checked=!!SET[k];else if(el.type==='range')el.value=SET[k];
+    el.addEventListener('input',()=>{SET[k]=el.type==='checkbox'?el.checked:+el.value;saveSet();Sound.apply();if(SET.sfx&&k.startsWith('sfx'))Sound.sfx('tap')});
+  });
+  document.querySelectorAll('[data-speed]').forEach(b=>{b.classList.toggle('on',+b.dataset.speed===SET.speed);b.onclick=()=>{SET.speed=+b.dataset.speed;saveSet();fast=SET.speed>1;board.speed(SET.speed);
+    $('speed').querySelector('span').textContent=fast?'1배속':'2배속';document.querySelectorAll('[data-speed]').forEach(x=>x.classList.toggle('on',x===b))}});
+  document.querySelectorAll('.gear').forEach(b=>b.onclick=()=>{Sound.unlock();$('setDlg').showModal()});
+}
+
+// ---------- PVP: Firestore 방 문서 하나로 두 사람을 맞춘다 ----------
+// 라운드마다 각자 상점에서 팀을 짜고 subs.{uid}에 {r:라운드, t:팀}을 올린다. 둘 다 올라오면 두 기기가 같은 씨앗으로
+// battle(방장 팀, 참가자 팀)을 똑같이 계산해서 동시에 보여 준다 (참가자 화면은 좌우를 뒤집어 그린다).
+// ponytail: 클라이언트가 결과를 계산하므로 조작을 막지는 못한다. 규칙은 점수 변화 폭만 묶어 둔다.
+const PVP_TIERS=[{n:'초심부',c:'#9fe870',min:-1e9},{n:'7부',c:'#cd7f32',min:1000},{n:'6부',c:'#d49a65',min:1100},{n:'5부',c:'#c0c7d0',min:1200},
+  {n:'4부',c:'#ffd166',min:1300},{n:'3부',c:'#4fd1c5',min:1400},{n:'2부',c:'#63b3ed',min:1600},{n:'1부',c:'#b794f4',min:1800},{n:'선수부',c:'#ff8c42',min:2000}];
+const tierOf=r=>PVP_TIERS.reduce((a,t)=>r>=t.min?t:a,PVP_TIERS[0]);
+const tierTag=r=>{const t=tierOf(r);return`<span class="tier" style="--tc:${t.c}">${t.n}</span>`};
+const PVP_TURN=75,CODE_CH='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+let pvp=null,myPvp={rating:1000,win:0,lose:0},aiSave=null,pvpTimer=null;
+const ROOM=code=>fb.F.doc(fb.db,'autopets_rooms',code);
+const nick=()=>(user?.displayName||'플레이어').slice(0,20);
+function pvpErr(m){$('pvpErr').textContent=m||''}
+function pvpView(v){document.querySelectorAll('#pvpDlg [data-view]').forEach(x=>x.hidden=x.dataset.view!==v);pvpErr()}
+async function loadMyPvp(){
+  if(!fb||!user)return;
+  try{const s=await fb.F.getDoc(fb.F.doc(fb.db,'autopets_pvp',user.uid));if(s.exists()){const d=s.data();myPvp={rating:d.rating,win:d.win,lose:d.lose}}}catch(e){console.error(e)}
+  renderPvpMe();
+}
+function renderPvpMe(){
+  const t=tierOf(myPvp.rating),next=PVP_TIERS.find(x=>x.min>myPvp.rating);
+  $('pvpMe').innerHTML=`<span class="tier big" style="--tc:${t.c}">${t.n}</span><span class="num rate">${myPvp.rating}</span><span class="wl">${myPvp.win}승 ${myPvp.lose}패${next?` · ${next.n}까지 ${next.min-myPvp.rating}점`:''}</span>`;
+}
+function openPvp(){if(!user)return toast('로그인하면 PVP를 할 수 있어요');Sound.sfx('tap');pvpView('menu');renderPvpMe();$('pvpDlg').showModal();loadMyPvp()}
+async function createRoom(){
+  const {F}=fb,code=Array.from({length:5},()=>CODE_CH[Math.floor(Math.random()*CODE_CH.length)]).join('');
+  $('mkRoom').disabled=true;
+  try{await F.setDoc(ROOM(code),{host:user.uid,hostName:nick(),hostRating:myPvp.rating,guest:null,guestName:'',guestRating:0,
+    seed:Math.floor(Math.random()*1e9),status:'wait',subs:{},lives:{},wins:{},leftBy:'',created:F.serverTimestamp()})}
+  catch(e){console.error(e);$('mkRoom').disabled=false;return pvpErr('방을 만들지 못했어요. 잠시 뒤 다시 눌러 주세요.')}
+  $('mkRoom').disabled=false;$('roomCode').innerHTML=[...code].map(c=>`<span>${c}</span>`).join('');$('roomCode').dataset.code=code;
+  pvpView('wait');listenRoom(code,'host');
+}
+async function joinRoom(){
+  const code=$('joinCode').value.trim().toUpperCase().replace(/[^A-Z0-9]/g,'');
+  if(code.length!==5)return pvpErr('방 코드 5자리를 입력하세요');
+  const {F}=fb;$('joinBtn').disabled=true;
+  try{
+    const s=await F.getDoc(ROOM(code));
+    if(!s.exists())return pvpErr('그 코드의 방이 없어요. 코드를 다시 확인해 주세요');
+    const d=s.data();
+    if(d.host===user.uid)return pvpErr('내가 만든 방이에요. 다른 계정으로 참가해야 해요');
+    if(d.status!=='wait'||d.guest)return pvpErr('이미 시작했거나 꽉 찬 방이에요');
+    await F.updateDoc(ROOM(code),{guest:user.uid,guestName:nick(),guestRating:myPvp.rating,status:'play'});
+    listenRoom(code,'guest');
+  }catch(e){console.error(e);pvpErr('참가하지 못했어요. 잠시 뒤 다시 해 주세요')}
+  finally{$('joinBtn').disabled=false}
+}
+function listenRoom(code,role){
+  leavePvp();
+  pvp={code,role,d:null,started:false,over:false,oppLives:5,oppWins:0};
+  pvp.unsub=fb.F.onSnapshot(ROOM(code),s=>{if(pvp&&s.exists())onRoom(s.data())},e=>{console.error(e);toast('방과 연결이 끊겼어요')});
+}
+function leavePvp(){if(!pvp)return;pvp.unsub?.();clearInterval(pvpTimer);pvp=null}
+async function cancelRoom(){
+  const p=pvp;leavePvp();
+  if(p&&p.role==='host'&&!p.started)try{await fb.F.deleteDoc(ROOM(p.code))}catch(e){console.error(e)}
+  pvpView('menu');
+}
+const oppUid=()=>pvp.role==='host'?pvp.d.guest:pvp.d.host;
+const oppReady=()=>pvp?.d?.subs?.[oppUid()]?.r===me.turn;
+function onRoom(d){
+  pvp.d=d;
+  if(d.status==='play'&&!pvp.started)return startPvp();
+  if(!pvp.started)return;
+  if(d.status==='left'&&d.leftBy&&d.leftBy!==user.uid&&!pvp.over){toast('상대가 나갔어요. 기권승이에요');return finishPvp('win',true)}
+  if(mode==='shop'||mode==='wait')render();
+  tryPvpBattle();
+}
+function startPvp(){
+  pvp.started=true;Sound.sfx('start');
+  if(started())aiSave={me,bot,foeName};   // 하던 AI 대전은 잠시 맡겨 두었다가 PVP가 끝나면 돌려준다
+  const d=pvp.d;pvp.opp=pvp.role==='host'?{name:d.guestName,rating:d.guestRating}:{name:d.hostName,rating:d.hostRating};
+  me=newState(true);me.pvp=true;bot=newState(false);foeName=pvp.opp.name;sel=null;
+  $('pvpDlg').close();showScreen('game');pvpNextTurn();
+}
+function pvpNextTurn(){
+  clearInterval(pvpTimer);pvp.left=PVP_TURN;startTurn(me);render();
+  pvpTimer=setInterval(()=>{
+    if(!pvp)return clearInterval(pvpTimer);
+    pvp.left--;if(mode==='shop')$('stage').innerHTML=pvpStage();
+    if(pvp.left<=0){clearInterval(pvpTimer);if(mode==='shop')pvpSubmit()}
+  },1000);
+}
+const pvpStage=()=>`<span style="color:#ff7a8a">PVP</span> 라운드 <span class="num">${me.turn}</span> <span class="clock ${pvp.left<=10?'low':''}">${Math.max(0,pvp.left)}초</span>`;
+async function pvpSubmit(){
+  sel=null;endTurn(me);clearInterval(pvpTimer);
+  mode='wait';document.querySelector('main').classList.add('battling');scrollTo(0,0);
+  $('shopbar').hidden=$('info').hidden=true;$('bctl').hidden=true;board.team(me.team,-1);
+  $('caption').textContent=oppReady()?'곧 전투가 시작돼요':`${pvp.opp.name} 님이 팀을 정하는 중…`;
+  try{await fb.F.updateDoc(ROOM(pvp.code),{[`subs.${user.uid}`]:{r:me.turn,t:JSON.stringify(me.team)}})}
+  catch(e){console.error(e);toast('팀을 보내지 못했어요. 연결을 확인해 주세요')}
+  tryPvpBattle();
+}
+function tryPvpBattle(){
+  if(!pvp||mode!=='wait')return;
+  const s=pvp.d.subs||{},a=s[pvp.d.host],b=s[pvp.d.guest];
+  if(a?.r!==me.turn||b?.r!==me.turn){$('caption').textContent=`${pvp.opp.name} 님이 팀을 정하는 중…`;return}
+  const ht=JSON.parse(a.t),gt=JSON.parse(b.t),host=pvp.role==='host';
+  let {frames,r}=battleSeeded(ht,gt,pvp.d.seed+me.turn*7919);
+  if(!host){frames=frames.map(f=>({...f,A:f.B,B:f.A}));r=r==='win'?'lose':r==='lose'?'win':r}
+  bot.team=host?gt:ht;
+  mode='battle';$('bctl').hidden=false;$('next').hidden=true;$('skip').hidden=false;
+  board.play(frames,()=>pvpResult(r),$('caption'));
+}
+function pvpResult(r){
+  $('skip').hidden=true;$('next').hidden=false;
+  if(r==='win'){me.wins++;pvp.oppLives--}else if(r==='lose'){me.lives--;pvp.oppWins++}
+  fb.F.updateDoc(ROOM(pvp.code),{[`lives.${user.uid}`]:me.lives,[`wins.${user.uid}`]:me.wins}).catch(e=>console.error(e));
+  const won=me.wins>=10||pvp.oppLives<=0,lost=!won&&(me.lives<=0||pvp.oppWins>=10);
+  Sound.sfx(r==='win'?'win':r==='lose'?'lose':'tap');
+  $('caption').textContent=(r==='win'?'승리! 트로피 +1':r==='lose'?'패배… 체력 -1':'무승부')+(won?' — PVP 승리!':lost?' — PVP 패배':'');
+  $('next').textContent=won||lost?'결과 보기':'다음 라운드';
+  $('next').onclick=()=>{document.querySelector('main').classList.remove('battling');mode='shop';$('shopbar').hidden=$('info').hidden=false;$('bctl').hidden=true;
+    if(won||lost)finishPvp(won?'win':'lose');else pvpNextTurn()};
+}
+async function finishPvp(res,forfeit){
+  if(!pvp||pvp.over&&!forfeit&&pvp.done)return;
+  const p=pvp;p.over=true;p.done=true;clearInterval(pvpTimer);
+  const E=1/(1+10**((p.opp.rating-myPvp.rating)/400)),delta=Math.max(-40,Math.min(40,Math.round(32*((res==='win'?1:0)-E))));
+  const before=myPvp.rating;
+  myPvp={rating:Math.max(0,before+delta),win:myPvp.win+(res==='win'?1:0),lose:myPvp.lose+(res==='win'?0:1)};
+  leavePvp();
+  try{
+    await fb.F.setDoc(fb.F.doc(fb.db,'autopets_pvp',user.uid),{name:nick(),...myPvp,at:fb.F.serverTimestamp()});
+    if(p.d.status!=='left')await fb.F.updateDoc(ROOM(p.code),{status:'end'});
+  }catch(e){console.error(e);toast('PVP 점수를 저장하지 못했어요')}
+  if(aiSave){({me,bot,foeName}=aiSave);aiSave=null}else newGame();
+  document.querySelector('main').classList.remove('battling');
+  rankTab='pvp';showScreen('lobby');
+  const t0=tierOf(before),t1=tierOf(myPvp.rating);
+  $('resBig').textContent=res==='win'?'승리':'패배';$('resBig').className='big '+res;
+  $('resRate').innerHTML=`<div class="delta"><span class="num">${before}</span><svg class="ico"><use href="#i-arrow"/></svg><span class="num now">${myPvp.rating}</span><b class="${delta>=0?'up':'down'}">${delta>=0?'+':''}${delta}</b></div>
+    <div class="tierline">${tierTag(myPvp.rating)}${t0.n!==t1.n?`<span class="promo">${delta>0?'승급':'강등'}! ${t0.n} → ${t1.n}</span>`:''}</div>${forfeit?'<p class="rule">상대가 나가서 기권으로 처리됐어요</p>':''}`;
+  pvpView('result');$('pvpDlg').showModal();
+}
+async function quitPvp(){
+  if(!pvp?.started||pvp.over)return true;
+  if(!confirm('PVP 도중에 나가면 패배로 기록돼요. 나갈까요?'))return false;
+  try{await fb.F.updateDoc(ROOM(pvp.code),{status:'left',leftBy:user.uid})}catch(e){console.error(e)}
+  await finishPvp('lose',false);return false;
+}
+
 async function login(){
   if(!fb)return toast('Firebase 연결 준비 중이에요');
   try{await fb.A.signInWithPopup(fb.auth,new fb.A.GoogleAuthProvider())}
@@ -1134,7 +1501,7 @@ async function login(){
 }
 $('plogin').onclick=login;
 $('logout').onclick=async()=>{await fb.A.signOut(fb.auth);stats={games:0,champs:0,best:0};newGame()};
-newGame();showAccount();gate(false);
+newGame();showAccount();bindSettings();board.speed(SET.speed);fast=SET.speed>1;gate(false);
 initFirebase().catch(e=>{console.error(e);$('plogin').lastChild.textContent='연결 실패 · 새로고침해 주세요'});
 </script>
 </body>

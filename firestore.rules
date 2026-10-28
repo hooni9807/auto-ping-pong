@@ -23,5 +23,32 @@ service cloud.firestore {
         && request.resource.data.wins is int && request.resource.data.wins >= 0 && request.resource.data.wins <= 10
         && request.resource.data.at == request.time;
     }
+    // PVP 방: 방장이 만들고, 비어 있는 방에는 한 사람만 참가자로 들어올 수 있다. 진행 중에는 두 사람만 고친다.
+    match /autopets_rooms/{code} {
+      allow read: if request.auth != null;
+      allow create: if request.auth != null && request.resource.data.host == request.auth.uid
+        && request.resource.data.status == 'wait' && request.resource.data.guest == null;
+      allow update: if request.auth != null && (resource.data.host == request.auth.uid || resource.data.guest == request.auth.uid
+        || (resource.data.guest == null && resource.data.status == 'wait'
+            && request.resource.data.guest == request.auth.uid && request.resource.data.status == 'play'));
+      allow delete: if request.auth != null && resource.data.host == request.auth.uid;
+    }
+    // PVP 점수: 모두 읽고, 본인 점수만 한 판에 ±40 안에서 바뀐다.
+    match /autopets_pvp/{uid} {
+      function okPvp(d) {
+        return d.keys().hasOnly(['name', 'rating', 'win', 'lose', 'at'])
+          && d.name is string && d.name.size() >= 1 && d.name.size() <= 20
+          && d.rating is int && d.rating >= 0 && d.rating <= 5000
+          && d.win is int && d.win >= 0 && d.lose is int && d.lose >= 0
+          && d.at == request.time;
+      }
+      allow read: if request.auth != null;
+      allow create: if request.auth != null && request.auth.uid == uid && okPvp(request.resource.data)
+        && request.resource.data.rating >= 960 && request.resource.data.rating <= 1040
+        && request.resource.data.win + request.resource.data.lose == 1;
+      allow update: if request.auth != null && request.auth.uid == uid && okPvp(request.resource.data)
+        && request.resource.data.rating - resource.data.rating <= 40 && resource.data.rating - request.resource.data.rating <= 40
+        && request.resource.data.win + request.resource.data.lose == resource.data.win + resource.data.lose + 1;
+    }
   }
 }
