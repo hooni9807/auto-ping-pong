@@ -479,7 +479,7 @@ const PETS={
   jiseong:T('김치성',3,2,3,L=>`기절: "역전 치성" ${2*L}/${2*L} 두 명 소환`,{faint(c,L){summon(c.mine,c.idx,'chiT',2*L,2*L);summon(c.mine,c.idx,'chiT',2*L,2*L)}}),
   leesin:T('리신범',4,4,3,L=>`전투 시작: 체력이 가장 낮은 적에게 ${4*L} 피해`,{start(c,L){const a=alive(c.foe);if(a.length)dmg(a.reduce((m,p)=>p.hp<m.hp?p:m),4*L,c.me)}}),
   adam:T('아담 성',4,3,5,L=>`턴 종료: Lv2 이상 다른 아군 2명 +${L}/+${L}`,{endTurn(S,me,L){shuffle(S.team.filter(p=>p&&p!==me&&lvlOf(p.xp)>=2)).slice(0,2).forEach(p=>buff(p,L,L))}}),
-  sleepy:T('졸린 지킬',4,4,5,L=>`적 처치: +${2*L}/+${2*L}`,{kill(c,L){buff(c.me,2*L,2*L)}}),
+  sleepy:T('쿨쿨범',4,4,5,L=>`적 처치: +${2*L}/+${2*L}`,{kill(c,L){buff(c.me,2*L,2*L)}}),
   aribeom:T('매혹범',4,3,4,L=>`전투 시작: 공격력이 가장 높은 적 공격 -${2*L}`,{start(c,L){const a=alive(c.foe);if(a.length){const t=a.reduce((m,p)=>p.atk>m.atk?p:m);t.atk=Math.max(1,t.atk-2*L)}}}),
   hyde:T('하이드',5,4,4,L=>`아군 기절: +${2*L}/+${L}`,{friendFaint(c,L){buff(c.me,2*L,L)}}),
   godyung:T('갓융자',5,6,3,L=>`적 처치: 맨 앞 적에게 ${4*L} 피해`,{kill(c,L){dmg(alive(c.foe)[0],4*L,c.me)}}),
