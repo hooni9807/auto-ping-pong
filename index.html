@@ -17,7 +17,9 @@ h1{font-size:16px;margin:0;white-space:nowrap}h1 i,#prologue h2 i{color:var(--li
 .wrap{position:relative}
 canvas.board{display:block;width:100%;aspect-ratio:1/1;max-height:56vh;border-radius:14px;border:1px solid var(--line);background:radial-gradient(90% 70% at 50% 45%,#1d2547 0%,#0d1124 70%);touch-action:manipulation}
 @media (min-width:760px){canvas.board{aspect-ratio:16/9;max-height:62vh}}
-#players{position:absolute;right:8px;top:8px;display:flex;flex-direction:column;gap:4px;pointer-events:none}
+.right{position:absolute;right:8px;top:8px;display:flex;flex-direction:column;align-items:flex-end;gap:6px;pointer-events:none}
+#players{display:flex;flex-direction:column;gap:4px}
+.traits.foe{position:static;align-items:flex-end}.traits.foe .tr{flex-direction:row-reverse;padding:2px 4px 2px 8px}
 .pl{background:#000b;border:1px solid var(--line);border-radius:8px;padding:3px 8px;font-size:11px;min-width:92px}
 .pl .bar{height:4px;background:#333;border-radius:2px;margin-top:2px}.pl .bar i{display:block;height:100%;background:#22c55e;border-radius:2px}
 .pl.foe .bar i{background:#ef4444}
@@ -72,7 +74,7 @@ button.go{background:var(--lime);color:#000;font-weight:700;border:0}
 <main hidden>
   <div class="top"><h1>Auto Ping Pong<i>.</i></h1><span id="stage"></span><button id="login">Google 로그인</button></div>
   <div id="account" class="label"></div>
-  <div class="wrap"><canvas id="board" class="board"></canvas><div id="caption" class="caption"></div><div id="traits" class="traits"></div><div id="players"></div></div>
+  <div class="wrap"><canvas id="board" class="board"></canvas><div id="caption" class="caption"></div><div id="traits" class="traits"></div><div class="right"><div id="players"></div><div id="ftraits" class="traits foe"></div></div></div>
   <div id="info"></div>
   <div id="shopbar">
     <div class="bar2"><span class="gold" id="gold"></span><span id="trophy" class="label"></span><span style="flex:1"></span><button id="roll">새로고침 1</button><button id="freeze">얼리기</button><button id="sell">팔기</button><button id="end" class="go">전투 ▶</button></div>
@@ -689,14 +691,17 @@ function render(){
   if(sel&&sel.src!=='food'){const p=sel.src==='team'?me.team[sel.i]:me.shop.pets[sel.i];const ts=TRAIT_OF[p.key]||[];
     if(ts.length)info+=`<br>시너지: ${ts.map(t=>`<b style="color:${TRAITS[t].c}">${TRAITS[t].n}</b>`).join(', ')}`}
   $('info').innerHTML=info;
-  const tc=traitCounts(me.team);   // 왼쪽 시너지 목록: 현재 인원 / 다음 단계 인원
-  $('traits').innerHTML=Object.keys(tc).sort((a,b)=>traitLv(b,tc[b])-traitLv(a,tc[a])||tc[b]-tc[a]).map(t=>{const T=TRAITS[t],n=tc[t],lv=traitLv(t,n),next=T.th.find(x=>x>n)??T.th[T.th.length-1];
-    return`<div class="tr ${lv?'on':''} ${lv===T.th.length?'max':''}" style="--tc:${T.c}" title="${T.th.map((x,i)=>`${x}: ${T.d[i]}`).join(' / ')}"><i></i>${T.n} <b>${n}/${next}</b></div>`}).join('');
+  $('traits').innerHTML=traitList(me.team);$('ftraits').innerHTML=traitList(bot.team);   // 왼쪽 내 팀 · 오른쪽 상대 팀
   $('roll').disabled=me.gold<1;
   $('freeze').disabled=!sel||sel.src==='team';
   $('freeze').textContent=sel&&sel.src!=='team'&&(sel.src==='pet'?me.shop.pets:me.shop.food)[sel.i].frozen?'녹이기':'얼리기';
   $('sell').disabled=sel?.src!=='team';
   if(mode==='shop'){board.team(me.team,sel?.src==='team'?sel.i:-1);$('caption').textContent=''}
+}
+function traitList(team){   // 시너지 목록: 현재 인원 / 다음 단계 인원
+  const tc=traitCounts(team);
+  return Object.keys(tc).sort((a,b)=>traitLv(b,tc[b])-traitLv(a,tc[a])||tc[b]-tc[a]).map(t=>{const T=TRAITS[t],n=tc[t],lv=traitLv(t,n),next=T.th.find(x=>x>n)??T.th[T.th.length-1];
+    return`<div class="tr ${lv?'on':''} ${lv===T.th.length?'max':''}" style="--tc:${T.c}" title="${T.th.map((x,i)=>`${x}: ${T.d[i]}`).join(' / ')}"><i></i>${T.n} <b>${n}/${next}</b></div>`}).join('');
 }
 let tt;function toast(m){$('toast').textContent=m;$('toast').classList.add('on');clearTimeout(tt);tt=setTimeout(()=>$('toast').classList.remove('on'),1800)}
 function fail(m){if(m)toast(m);return m}
