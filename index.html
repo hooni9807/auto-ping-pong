@@ -298,6 +298,33 @@ button.ghost{background:transparent;border-color:transparent;color:var(--muted);
 .tierline{display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap}
 .promo{color:var(--gold-hi);font-weight:800;font-size:14px}
 
+/* 시너지 도감 버튼: 금빛 AI 대전 · 진홍 PVP와 구분되는 조용한 보조 버튼 */
+button.syn{flex-direction:row;min-height:52px;font-size:16px;font-weight:800;color:var(--parch);border:1px solid var(--line-strong);border-radius:12px;
+  background:linear-gradient(180deg,#1d3a45,#122a32)}
+button.syn .ico{color:var(--gold-hi)}button.syn small{font:600 12px/1 var(--body);color:var(--muted);margin-left:4px}
+/* 시너지 도감 */
+.syndlg{width:min(94vw,560px)}
+.dsub{margin:8px 40px 0 0;color:var(--muted);font-size:13px;line-height:1.5}
+.synlist{display:flex;flex-direction:column;gap:10px;padding:14px 16px 18px;overflow-y:auto;max-height:calc(90vh - 120px)}
+.syn{padding:12px 14px 14px;border-radius:12px;background:linear-gradient(180deg,color-mix(in srgb,var(--tc) 14%,#11262e) 0%,#0d1d23 70%);
+  border:1px solid color-mix(in srgb,var(--tc) 35%,transparent)}
+.synhead{display:flex;align-items:center;gap:10px}
+.synhead h3{margin:0;font-size:17px;font-weight:800;color:var(--parch)}
+.synhead .cnt{margin-left:auto;color:var(--muted);font-size:12px}
+.syn .emb{position:relative;width:30px;height:33px;flex:none;display:grid;place-items:center;background:var(--gold-hi);clip-path:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%)}
+.syn .emb::after{content:"";width:23px;height:26px;background:#1b262b;clip-path:inherit}
+.syn .emb i{position:absolute;inset:9px;border-radius:50%;background:var(--tc);z-index:1}
+.steps{list-style:none;margin:10px 0 0;padding:0;display:flex;flex-direction:column;gap:5px}
+.steps li{display:flex;align-items:center;gap:10px;font-size:13.5px;color:var(--ink)}
+.steps b{flex:none;width:26px;height:26px;display:grid;place-items:center;border-radius:7px;background:color-mix(in srgb,var(--tc) 30%,#0b1418);
+  box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--tc) 70%,transparent);color:var(--parch);font-size:14px}
+.mem{list-style:none;margin:12px 0 0;padding:0;display:flex;flex-wrap:wrap;gap:10px 8px}
+.mem li{width:58px;display:flex;flex-direction:column;align-items:center;gap:4px}
+.mem .ph{position:relative;width:52px;height:52px;border-radius:12px;overflow:hidden;background:linear-gradient(180deg,#1f3a44,#0d1a20);box-shadow:inset 0 0 0 2px var(--cc)}
+.mem img{width:100%;height:100%;object-fit:cover;object-position:50% 15%;display:block}
+.mem .ph b{position:absolute;right:2px;bottom:2px;min-width:16px;height:16px;padding:0 3px;display:grid;place-items:center;border-radius:4px;background:var(--cc);color:#08100f;font-size:11px}
+.mem .nm{font-size:11px;color:var(--parch);text-align:center;line-height:1.25;word-break:keep-all}
+
 /* 게임 중 PVP 표시 */
 .clock{margin-left:4px;padding:1px 7px;border-radius:999px;background:#0008;color:var(--parch);font:800 12px/1.4 var(--display)}
 .clock.low{background:#c8304f;color:#fff}
@@ -337,6 +364,7 @@ button.ghost{background:transparent;border-color:transparent;color:var(--muted);
   <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
   <symbol id="i-copy" viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></symbol>
   <symbol id="i-vs" viewBox="0 0 24 24"><path d="M3 5l4 14 4-14M21 7a4 4 0 0 0-4-2c-2 0-3.5 1-3.5 2.8 0 3.7 7.5 2.2 7.5 6.4 0 1.9-1.6 3.3-4 3.3a4.5 4.5 0 0 1-4-2"/></symbol>
+  <symbol id="i-hex" viewBox="0 0 24 24"><path d="M12 2.5 20.5 7.3v9.4L12 21.5l-8.5-4.8V7.3z"/><path d="M12 8v8M8.5 10l7 4M15.5 10l-7 4"/></symbol>
   <symbol id="i-heart" viewBox="0 0 24 24"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/></symbol>
 </svg>
 <div id="prologue">
@@ -357,6 +385,7 @@ button.ghost{background:transparent;border-color:transparent;color:var(--muted);
       <div class="dgrid"><button class="dbtn" data-diff="easy" style="--dc:#17b98a"><b>이지</b><small>골드를 덜 받고, 아무 캐릭터나 사요</small></button><button class="dbtn" data-diff="hard" style="--dc:#3389e6"><b>하드</b><small>나와 같은 규칙으로 꼼꼼하게 팀을 짜요</small></button><button class="dbtn" data-diff="extreme" style="--dc:#c24de2"><b>익스트림</b><small>골드 +2, 매 턴 랜덤 2명 +1/+1</small></button><button class="dbtn" data-diff="ultra" style="--dc:#ff5470"><b>울트라</b><small>골드 +4, 매 턴 모두 +1/+1</small></button></div>
     </div>
     <button id="pvpBtn" class="wide pvp"><svg class="ico"><use href="#i-vs"/></svg>PVP<small>친구와 실시간 대결</small></button>
+    <button id="synBtn" class="wide syn"><svg class="ico"><use href="#i-hex"/></svg>시너지 도감<small>시너지 효과와 캐릭터 한눈에 보기</small></button>
   </div>
   <section class="rankbox" aria-labelledby="rank-h">
     <div class="rankhead"><h2 id="rank-h">랭킹</h2><div class="rtabs" role="tablist"><button data-rtab="ai" class="on" role="tab">AI 기록</button><button data-rtab="pvp" role="tab">PVP 랭킹</button></div></div><div class="rf" id="rfAi"><button data-rank="all" class="on">전체</button><button data-rank="easy">이지</button><button data-rank="hard">하드</button><button data-rank="extreme">익스트림</button><button data-rank="ultra">울트라</button></div>
@@ -399,6 +428,11 @@ button.ghost{background:transparent;border-color:transparent;color:var(--muted);
   </div>
   <div data-view="result" class="dv" hidden><p id="resBig" class="big"></p><div id="resRate"></div><button id="resOk" class="go">확인</button></div>
   <p id="pvpErr" class="err" role="alert"></p>
+</dialog>
+<dialog id="synDlg" class="dlg syndlg" aria-labelledby="syn-h">
+  <button class="x" id="synX" aria-label="닫기"><svg class="ico"><use href="#i-x"/></svg></button>
+  <header class="dh"><h2 id="syn-h">시너지 도감</h2><p class="dsub">서로 다른 캐릭터를 같은 시너지로 모으면 효과가 켜져요. 숫자는 필요한 인원이에요.</p></header>
+  <div id="synList" class="synlist"></div>
 </dialog>
 <dialog id="setDlg" class="dlg" aria-labelledby="set-h">
   <form method="dialog">
@@ -1331,7 +1365,19 @@ document.addEventListener('click',e=>{const b=e.target.closest('[data-rtab]');if
 document.addEventListener('click',e=>{const b=e.target.closest('[data-rank]');if(!b)return;rankFilter=b.dataset.rank;document.querySelectorAll('[data-rank]').forEach(x=>x.classList.toggle('on',x===b));loadRank()});
 document.addEventListener('click',e=>{const b=e.target.closest('[data-diff]');if(b)startGame(b.dataset.diff)});
 $('aiBtn').onclick=()=>{Sound.sfx('tap');$('diffs').hidden=!$('diffs').hidden};
-$('pvpBtn').onclick=openPvp;$('mkRoom').onclick=createRoom;$('joinBtn').onclick=joinRoom;$('cancelRoom').onclick=cancelRoom;
+$('pvpBtn').onclick=openPvp;
+function openSyn(){   // 시너지 도감: 시너지마다 단계별 효과와 소속 캐릭터 초상화
+  const esc=t=>String(t).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'})[c]);
+  $('synList').innerHTML=Object.entries(TRAITS).map(([k,T])=>{
+    const mem=Object.keys(TRAIT_OF).filter(c=>TRAIT_OF[c].includes(k)).sort((a,b)=>PETS[a].t-PETS[b].t);
+    return`<section class="syn" style="--tc:${T.c}">
+      <div class="synhead"><span class="emb on"><i></i></span><h3>${T.n}</h3><span class="cnt">${mem.length}명</span></div>
+      <ol class="steps">${T.th.map((n,i)=>`<li><b class="num">${n}</b><span>${esc(T.d[i])}</span></li>`).join('')}</ol>
+      <ul class="mem">${mem.map(c=>{const d=PETS[c],f=d.f===undefined?c:d.f;return`<li style="--cc:${TC[d.t]}" title="${esc(d.n)} · ${d.t}코스트"><span class="ph"><img src="faces/${f}-face.png" alt="" loading="lazy"><b class="num">${d.t}</b></span><span class="nm">${esc(d.n)}</span></li>`}).join('')}</ul>
+    </section>`}).join('');
+  Sound.sfx('tap');$('synDlg').showModal();
+}
+$('synBtn').onclick=openSyn;$('synX').onclick=()=>$('synDlg').close();$('mkRoom').onclick=createRoom;$('joinBtn').onclick=joinRoom;$('cancelRoom').onclick=cancelRoom;
 $('joinCode').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();joinRoom()}});
 $('copyCode').onclick=()=>{navigator.clipboard?.writeText($('roomCode').dataset.code).then(()=>toast('코드를 복사했어요'),()=>toast('복사하지 못했어요'))};
 $('pvpX').onclick=()=>{if(pvp&&!pvp.started)cancelRoom();$('pvpDlg').close()};
