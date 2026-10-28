@@ -1,0 +1,374 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Auto Ping Pong</title>
+<style>
+:root{--bg:#0f1020;--panel:#181a33;--line:#2a2d52;--text:#eef0ff;--dim:#9aa0c8;--lime:#c8f169;--atk:#f59e0b;--hp:#ef4444}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:14px/1.4 system-ui,-apple-system,"Apple SD Gothic Neo",sans-serif;-webkit-user-select:none;user-select:none}
+main{max-width:720px;margin:0 auto;padding:12px 16px 24px}
+h1{font-size:20px;margin:4px 0 10px;letter-spacing:.5px}h1 i{color:var(--lime);font-style:normal}
+#hud{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+#hud span{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:4px 10px}
+#hud b{color:var(--lime)}
+.label{color:var(--dim);font-size:12px;margin:10px 0 6px}
+.slots{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
+#team{direction:rtl}#team>*{direction:ltr}
+.slot{aspect-ratio:3/4;border:2px dashed var(--line);border-radius:10px;cursor:pointer}
+.card{position:relative;aspect-ratio:3/4;background:var(--panel);border:2px solid var(--line);border-radius:10px;overflow:hidden;cursor:pointer;transition:transform .15s}
+.card img{width:100%;height:100%;object-fit:cover;object-position:50% 20%;display:block}
+.card .bee,.card .food{display:grid;place-items:center;height:100%;font-size:32px}
+.card .nm{position:absolute;left:0;right:0;top:0;background:#0009;font-size:10px;text-align:center;padding:1px 2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.card .lv{position:absolute;left:2px;top:16px;background:#000a;font-size:9px;border-radius:4px;padding:0 3px}
+.card .lv i{font-style:normal;color:var(--lime);margin-left:2px}
+.card .tier{position:absolute;right:2px;top:16px;background:var(--lime);color:#000;font-size:9px;font-weight:700;border-radius:4px;padding:0 4px}
+.card .perk{position:absolute;right:2px;top:32px;font-size:14px}
+.card b{position:absolute;bottom:2px;min-width:20px;height:20px;border-radius:6px;display:grid;place-items:center;font-size:12px;color:#fff;text-shadow:0 1px 1px #0008}
+.card .atk{left:2px;background:var(--atk)}.card .hp{right:2px;background:var(--hp)}
+.card.sel{border-color:var(--lime);transform:translateY(-4px)}
+.card.frozen{border-color:#7dd3fc;box-shadow:inset 0 0 0 3px #7dd3fc66}
+.card.front{border-color:var(--lime)}
+.card.dead{opacity:.25}
+.card.hit{animation:hit .35s}
+@keyframes hit{30%{transform:translateX(-5px);filter:brightness(2)}60%{transform:translateX(5px)}}
+#info{min-height:58px;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:8px 10px;margin:10px 0;color:var(--dim)}
+#info strong{color:var(--text)}
+.actions{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:12px}
+button{font:inherit;color:var(--text);background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:10px 6px;cursor:pointer}
+button:disabled{opacity:.4;cursor:default}
+button.go{background:var(--lime);color:#000;font-weight:700;border:0}
+#battle{position:fixed;inset:0;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:16px}
+#battle[hidden]{display:none}
+.arena{display:flex;align-items:center;gap:10px;width:100%;max-width:820px}
+.arena>div:not(.vs){flex:1;width:100%}
+#ba{direction:rtl}#ba>*{direction:ltr}
+.vs{color:var(--lime);font-weight:800}
+.side{font-size:12px;color:var(--dim);text-align:center}
+#bmsg{min-height:22px;font-weight:600}
+#toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#000c;padding:8px 14px;border-radius:8px;opacity:0;transition:opacity .2s;pointer-events:none}
+#toast.on{opacity:1}
+@media (max-width:700px){.arena{flex-direction:column-reverse}#ba{direction:ltr}}
+</style>
+</head>
+<body>
+<main>
+  <div style="display:flex;justify-content:space-between;align-items:center;gap:8px">
+    <h1>Auto Ping Pong<i>.</i></h1>
+    <button id="login" style="padding:6px 10px">Google 로그인</button>
+  </div>
+  <div id="account" class="label"></div>
+  <div id="hud"></div>
+  <div class="label">내 팀 · 오른쪽이 맨 앞</div>
+  <div id="team" class="slots"></div>
+  <div id="info"></div>
+  <div class="label">상점</div>
+  <div id="shopPets" class="slots"></div>
+  <div id="shopFood" class="slots" style="margin-top:6px"></div>
+  <div class="actions">
+    <button id="roll">리롤 1</button><button id="freeze">얼리기</button><button id="sell">팔기</button><button id="end" class="go">전투 ▶</button>
+  </div>
+</main>
+<div id="battle" hidden>
+  <div id="bmsg"></div>
+  <div class="arena">
+    <div><div class="side">내 팀</div><div id="ba" class="slots"></div></div>
+    <div class="vs">VS</div>
+    <div><div class="side" id="foeName"></div><div id="bb" class="slots"></div></div>
+  </div>
+  <div style="display:flex;gap:8px"><button id="skip">건너뛰기</button><button id="next" class="go" hidden>다음 턴</button></div>
+</div>
+<div id="toast"></div>
+<script>
+const R=a=>a[Math.floor(Math.random()*a.length)];
+const shuffle=a=>a.map(x=>[Math.random(),x]).sort((p,q)=>p[0]-q[0]).map(x=>x[1]);
+const lvlOf=xp=>xp>=5?3:xp>=2?2:1;
+const cap=n=>Math.min(50,n);
+const buff=(p,a,h)=>{if(p){p.atk=cap(p.atk+a);p.hp=cap(p.hp+h)}};
+const alive=t=>t.filter(p=>p.hp>0);
+
+// 캐릭터 → 펫. 능력은 슈퍼오토펫의 펫 능력을 캐릭터 성격에 맞춰 옮겨 왔다.
+const T=(n,t,a,h,d,x={})=>({n,t,a,h,d,...x});
+const PETS={
+  hugo:T('휴고범',1,2,2,L=>`기절: 랜덤 아군 +${2*L}/+${L}`,{faint(c,L){buff(R(c.mine),2*L,L)}}),
+  ajae:T('아재범',1,1,3,L=>`기절: "우기기 아재" ${L}/${L} 소환`,{faint(c,L){summon(c.mine,c.idx,'ajaeT',L,L)}}),
+  jongryeong:T('빽종령',1,2,2,L=>`전투 시작: 랜덤 적에게 1 피해 ×${L}`,{start(c,L){for(let i=0;i<L;i++)dmg(R(alive(c.foe)),1,c.me)}}),
+  ttalgak:T('날먹세',1,2,1,L=>`판매: 골드 +${L} 추가`,{sell(S,me,L){S.gold+=L}}),
+  seohyun:T('일병3호봉',2,3,1,L=>`기절: 뒤 아군 2명 +${L}/+${L}`,{f:'private-four',faint(c,L){c.mine.slice(c.idx,c.idx+2).forEach(f=>buff(f,L,L))}}),
+  drunk:T('만취범',2,3,2,L=>`기절: 모든 펫에게 ${2*L} 피해`,{faint(c,L){[...c.mine,...c.foe].forEach(p=>dmg(p,2*L,c.me))}}),
+  songstar:T('송스타',2,2,4,L=>`피격 후 생존: 공격 +${2*L}`,{hurt(c,L){if(c.me.hp>0)c.me.atk=cap(c.me.atk+2*L)}}),
+  kumho:T('금호관장',3,1,5,L=>`기절: 뒤 아군 ${L}명에게 멜론(피해 -20) 지급`,{faint(c,L){c.mine.slice(c.idx,c.idx+L).forEach(f=>f.perk='melon')}}),
+  percival:T('퍼시벌',3,2,3,L=>`앞 아군이 공격할 때: +${L}/+${L}`,{ahead(c,L){buff(c.me,L,L)}}),
+  yunhwan:T('카사노바 윤',3,3,3,L=>`피격: 랜덤 적에게 ${2*L} 피해`,{hurt(c,L){dmg(R(alive(c.foe)),2*L,c.me)}}),
+  jiseong:T('김치성',3,2,3,L=>`기절: "역전 치성" ${2*L}/${2*L} 두 명 소환`,{faint(c,L){summon(c.mine,c.idx,'chiT',2*L,2*L);summon(c.mine,c.idx,'chiT',2*L,2*L)}}),
+  leesin:T('리신범',4,4,3,L=>`전투 시작: 체력이 가장 낮은 적에게 ${4*L} 피해`,{start(c,L){const a=alive(c.foe);if(a.length)dmg(a.reduce((m,p)=>p.hp<m.hp?p:m),4*L,c.me)}}),
+  adam:T('아담 성',4,3,5,L=>`턴 종료: Lv2 이상 다른 아군 2명 +${L}/+${L}`,{endTurn(S,me,L){shuffle(S.team.filter(p=>p&&p!==me&&lvlOf(p.xp)>=2)).slice(0,2).forEach(p=>buff(p,L,L))}}),
+  sleepy:T('졸린 지킬',4,4,5,L=>`적 처치: +${2*L}/+${2*L}`,{kill(c,L){buff(c.me,2*L,2*L)}}),
+  aribeom:T('매혹범',4,3,4,L=>`전투 시작: 공격력이 가장 높은 적 공격 -${2*L}`,{start(c,L){const a=alive(c.foe);if(a.length){const t=a.reduce((m,p)=>p.atk>m.atk?p:m);t.atk=Math.max(1,t.atk-2*L)}}}),
+  hyde:T('하이드',5,4,4,L=>`아군 기절: +${2*L}/+${L}`,{friendFaint(c,L){buff(c.me,2*L,L)}}),
+  godyung:T('갓융자',5,6,3,L=>`적 처치: 맨 앞 적에게 ${4*L} 피해`,{kill(c,L){dmg(alive(c.foe)[0],4*L,c.me)}}),
+  gambler:T('올인 도박사',5,5,5,L=>`전투 시작: ${40+10*L}% 확률로 공·체 2배, 실패하면 절반`,{start(c,L){const p=c.me;if(Math.random()<.4+.1*L){p.atk=cap(p.atk*2);p.hp=cap(p.hp*2)}else{p.atk=Math.ceil(p.atk/2);p.hp=Math.ceil(p.hp/2)}}}),
+  ninja:T('맹타치',5,5,4,L=>`전투 시작: 맨 뒤 적에게 ${5*L} 피해`,{start(c,L){const a=alive(c.foe);dmg(a[a.length-1],5*L,c.me)}}),
+  jh:T('지킬앤 하이범',6,6,7,L=>`전투 시작: 랜덤 적에게 공격력 절반 피해 ×${L}`,{f:'jekyll-hyde',start(c,L){for(let i=0;i<L;i++)dmg(R(alive(c.foe)),Math.ceil(c.me.atk/2),c.me)}}),
+  pastor:T('허허 목사',6,4,8,L=>`기절: 모든 아군 +${2*L}/+${2*L}`,{faint(c,L){c.mine.forEach(f=>buff(f,2*L,2*L))}}),
+  infibot:T('무한 리턴 봇',2,1,4,L=>`피격 후 생존: 멜론 획득 (전투당 ${L}회)`,{hurt(c,L){const p=c.me;if(p.hp>0&&p.uses<L){p.uses++;p.perk='melon'}}}),
+  boss:T('탁구 마왕',6,7,7,L=>`턴 종료: 다른 아군 모두 +${L}/+${L}`,{endTurn(S,me,L){S.team.forEach(p=>p&&p!==me&&buff(p,L,L))}}),
+  minhee:T('민희쌤',6,5,6,L=>`턴 종료: 랜덤 다른 아군 ${L}명 경험치 +1 (레슨)`,{endTurn(S,me,L){shuffle(S.team.filter(p=>p&&p!==me&&p.xp<5)).slice(0,L).forEach(p=>{buff(p,1,1);gainXp(S,p,1)})}}),
+  ajaeT:T('우기기 아재',0,1,1,()=>'',{f:'ajae'}),
+  chiT:T('역전 치성',0,2,2,()=>'',{f:'jiseong'}),
+  bee:T('꿀벌',0,1,1,()=>'',{f:null}),
+};
+const FOODS={
+  apple:{n:'사과',e:'🍎',t:1,d:'+1/+1',use(S,p){buff(p,1,1)}},
+  honey:{n:'꿀',e:'🍯',t:1,d:'기절하면 1/1 꿀벌 소환',perk:1},
+  choco:{n:'초콜릿',e:'🍫',t:2,d:'+1/+1, 경험치 +1',use(S,p){buff(p,1,1);gainXp(S,p,1)}},
+  meat:{n:'고기뼈',e:'🍖',t:2,d:'공격 피해 +3',perk:1},
+  garlic:{n:'마늘',e:'🧄',t:3,d:'받는 피해 -2 (최소 1)',perk:1},
+  salad:{n:'샐러드',e:'🥗',t:3,d:'랜덤 아군 2명 +1/+1',all:[2,1]},
+  sushi:{n:'초밥',e:'🍣',t:4,d:'랜덤 아군 3명 +1/+1',all:[3,1]},
+  melon:{n:'멜론',e:'🍈',t:5,d:'받는 피해 -20 (1회)',perk:1},
+  pizza:{n:'피자',e:'🍕',t:6,d:'랜덤 아군 2명 +2/+2',all:[2,2]},
+  steak:{n:'스테이크',e:'🥩',t:6,d:'다음 공격 피해 +20 (1회)',perk:1},
+};
+
+// ---------- 상점 (플레이어와 봇이 같은 규칙을 쓴다) ----------
+let uid=0;
+const mk=(key,atk=PETS[key].a,hp=PETS[key].h)=>({uid:++uid,key,atk,hp,xp:0,perk:null});
+const maxTier=S=>Math.min(6,Math.ceil(S.turn/2));
+const petSlots=S=>S.turn>=9?5:S.turn>=5?4:3;
+const foodSlots=S=>S.turn>=3?2:1;
+const pickPet=(lo,hi)=>R(Object.keys(PETS).filter(k=>PETS[k].t>=lo&&PETS[k].t<=hi));
+const pickFood=hi=>R(Object.keys(FOODS).filter(k=>FOODS[k].t<=hi));
+const shopPet=key=>({key,atk:PETS[key].a,hp:PETS[key].h,frozen:false});
+
+function newState(human){return{human,turn:0,gold:10,lives:5,wins:0,team:[null,null,null,null,null],shop:{pets:[],food:[]}}}
+function roll(S){
+  const sp=S.shop;
+  sp.pets=sp.pets.filter(x=>x.frozen);sp.food=sp.food.filter(x=>x.frozen);
+  while(sp.pets.length<petSlots(S))sp.pets.push(shopPet(pickPet(1,maxTier(S))));
+  while(sp.food.length<foodSlots(S))sp.food.push({key:pickFood(maxTier(S)),frozen:false});
+}
+function gainXp(S,p,n){
+  const before=lvlOf(p.xp);p.xp=Math.min(5,p.xp+n);
+  if(lvlOf(p.xp)>before){
+    const t=Math.min(6,maxTier(S)+1);
+    S.shop.pets.push(shopPet(pickPet(t,t)));
+    if(S.human)toast(`${PETS[p.key].n} Lv${lvlOf(p.xp)}! 상점에 ${t}티어 보너스 펫`);
+  }
+}
+function merge(S,t,src){t.atk=cap(Math.max(t.atk,src.atk)+1);t.hp=cap(Math.max(t.hp,src.hp)+1);gainXp(S,t,src.xp+1)}
+function buyPet(S,i,slot){
+  const it=S.shop.pets[i],t=S.team[slot];
+  if(S.gold<3)return'골드가 부족해요';
+  if(t&&(t.key!==it.key||t.xp>=5))return'같은 캐릭터끼리만 합칠 수 있어요';
+  S.gold-=3;S.shop.pets.splice(i,1);
+  const p=mk(it.key,it.atk,it.hp);
+  if(t)merge(S,t,p);else S.team[slot]=p;
+}
+function buyFood(S,i,p){
+  if(S.gold<3)return'골드가 부족해요';
+  const f=FOODS[S.shop.food[i].key];
+  if(!p&&!f.all)return'음식을 줄 펫을 고르세요';
+  if(!S.team.some(Boolean))return'팀에 펫이 없어요';
+  S.gold-=3;S.shop.food.splice(i,1);
+  if(f.all)shuffle(S.team.filter(Boolean)).slice(0,f.all[0]).forEach(x=>buff(x,f.all[1],f.all[1]));
+  else if(f.perk)p.perk=Object.keys(FOODS).find(k=>FOODS[k]===f);
+  else f.use(S,p);
+}
+function sell(S,slot){const p=S.team[slot];S.team[slot]=null;S.gold+=lvlOf(p.xp);PETS[p.key].sell?.(S,p,lvlOf(p.xp))}
+function reroll(S){if(S.gold<1)return'골드가 부족해요';S.gold--;roll(S)}
+function startTurn(S){S.turn++;S.gold=10;roll(S);S.team.forEach(p=>p&&PETS[p.key].startTurn?.(S,p,lvlOf(p.xp)))}
+function endTurn(S){S.team.forEach(p=>p&&PETS[p.key].endTurn?.(S,p,lvlOf(p.xp)))}
+
+// ponytail: 탐욕적인 봇 (합성 > 빈칸 채우기 > 상위 티어로 교체 > 음식 > 리롤). 실제 게임처럼 다른 유저 팀이 필요하면 Firebase에 팀을 저장해 불러오면 된다.
+const score=p=>PETS[p.key].t*10+p.atk+p.hp;
+function botPlay(S){
+  for(let g=0;g<40;g++){
+    const team=S.team,sp=S.shop.pets,empty=team.indexOf(null);
+    if(S.gold>=3){
+      const mi=sp.findIndex(x=>team.some(p=>p&&p.key===x.key&&p.xp<5));
+      if(mi>=0){buyPet(S,mi,team.findIndex(p=>p&&p.key===sp[mi].key&&p.xp<5));continue}
+      const best=sp.map((x,i)=>[PETS[x.key].t+Math.random(),i]).sort((a,b)=>b[0]-a[0])[0];
+      if(best&&empty>=0){buyPet(S,best[1],empty);continue}
+      if(best){const weak=team.reduce((m,p)=>score(p)<score(m)?p:m);if(PETS[sp[best[1]].key].t>PETS[weak.key].t){sell(S,team.indexOf(weak));continue}}
+      if(S.shop.food.length&&team.some(Boolean)){buyFood(S,0,R(team.filter(Boolean)));continue}
+    }
+    if(S.gold>=4){reroll(S);continue}
+    break;
+  }
+}
+
+// ---------- 전투 ----------
+let B;
+const P=p=>PETS[p.key];
+const ctx=p=>{const mine=B.A.includes(p)?B.A:B.B;return{me:p,mine,foe:mine===B.A?B.B:B.A}};
+function dmg(t,n,src){
+  if(!t||t.hp<=0||n<=0)return;
+  if(t.perk==='garlic')n=Math.max(1,n-2);
+  if(t.perk==='melon'){n=Math.max(0,n-20);t.perk=null}
+  if(n<=0)return;
+  t.hp-=n;B.q.push(t);
+  if(t.hp<=0)t.killer=src;
+}
+function summon(side,i,key,a,h){if(side.length<5)side.splice(Math.min(i,side.length),0,{...mk(key,a,h),L:1,uses:0})}
+function snap(msg){const c=t=>t.map(p=>({uid:p.uid,key:p.key,atk:p.atk,hp:Math.max(0,p.hp),perk:p.perk,L:p.L}));B.frames.push({A:c(B.A),B:c(B.B),msg})}
+function resolve(){
+  for(let g=0;g<300;g++){
+    if(B.q.length){const t=B.q.shift();P(t).hurt?.(ctx(t),t.L);continue}
+    let side=B.A.some(p=>p.hp<=0)?B.A:B.B.some(p=>p.hp<=0)?B.B:null;
+    if(!side)return;
+    const i=side.findIndex(p=>p.hp<=0),dead=side[i];
+    const c={me:dead,mine:side,foe:side===B.A?B.B:B.A,idx:i};
+    side.splice(i,1);
+    P(dead).faint?.(c,dead.L);
+    if(dead.perk==='honey')summon(side,i,'bee',1,1);
+    [...side].forEach(f=>P(f).friendFaint?.(ctx(f),f.L));
+    const k=dead.killer;if(k&&k.hp>0)P(k).kill?.(ctx(k),k.L);
+    snap(`${P(dead).n} 기절`);
+  }
+}
+function attackPower(p){let d=p.atk;if(p.perk==='meat')d+=3;if(p.perk==='steak'){d+=20;p.perk=null}return d}
+function battle(ta,tb){
+  const cl=p=>({...p,L:lvlOf(p.xp),uses:0});
+  B={A:ta.filter(Boolean).map(cl),B:tb.filter(Boolean).map(cl),q:[],frames:[]};
+  snap('전투 시작!');
+  for(const p of [...B.A,...B.B].sort((x,y)=>y.atk-x.atk))if(p.hp>0&&P(p).start){P(p).start(ctx(p),p.L);snap(`${P(p).n}: ${P(p).d(p.L)}`)}
+  resolve();
+  for(let n=0;B.A.length&&B.B.length&&n<100;n++){
+    for(const s of [B.A,B.B])if(s[1])P(s[1]).ahead?.(ctx(s[1]),s[1].L);
+    const a=B.A[0],b=B.B[0],da=attackPower(a),db=attackPower(b);
+    dmg(b,da,a);dmg(a,db,b);
+    snap(`${P(a).n} ⚔ ${P(b).n}`);
+    resolve();
+  }
+  const r=B.A.length&&!B.B.length?'win':!B.A.length&&B.B.length?'lose':'draw';
+  return{frames:B.frames,r};
+}
+
+// ---------- 화면 ----------
+const $=id=>document.getElementById(id);
+let me,bot,foeName,sel=null;
+function pips(xp){return xp>=5?'MAX':xp<2?'●'.repeat(xp)+'○'.repeat(2-xp):'●'.repeat(xp-2)+'○'.repeat(5-xp)}
+function card(p,o={}){
+  const d=PETS[p.key],f=d.f===undefined?p.key:d.f;
+  return `<div class="card ${o.cls||''}" ${o.attr||''}>
+    ${f?`<img src="faces/${f}-face.png" alt="${d.n}" draggable="false">`:'<div class="bee">🐝</div>'}
+    <span class="nm">${d.n}</span>
+    ${o.tier?`<span class="tier">T${d.t}</span>`:''}
+    ${p.xp!=null?`<span class="lv">Lv${lvlOf(p.xp)}<i>${pips(p.xp)}</i></span>`:p.L>1?`<span class="lv">Lv${p.L}</span>`:''}
+    ${p.perk?`<span class="perk">${FOODS[p.perk].e}</span>`:''}
+    <b class="atk">${p.atk}</b><b class="hp">${p.hp}</b></div>`;
+}
+const isSel=(src,i)=>sel&&sel.src===src&&sel.i===i?'sel':'';
+function render(){
+  $('hud').innerHTML=`<span>턴 <b>${me.turn}</b></span><span>골드 <b>${me.gold}</b></span><span>체력 <b>${me.lives}</b></span><span>트로피 <b>${me.wins}</b>/10</span><span>상대 <b>${foeName}</b></span>`;
+  $('team').innerHTML=me.team.map((p,i)=>p?card(p,{cls:isSel('team',i),attr:`data-team="${i}"`}):`<div class="slot" data-team="${i}"></div>`).join('');
+  $('shopPets').innerHTML=me.shop.pets.map((x,i)=>card(x,{tier:1,cls:`${isSel('pet',i)} ${x.frozen?'frozen':''}`,attr:`data-pet="${i}"`})).join('');
+  $('shopFood').innerHTML=me.shop.food.map((x,i)=>{const f=FOODS[x.key];return`<div class="card ${isSel('food',i)} ${x.frozen?'frozen':''}" data-food="${i}"><div class="food">${f.e}</div><span class="nm">${f.n}</span><span class="tier">T${f.t}</span></div>`}).join('');
+  let info='상점에서 캐릭터를 고른 뒤 내 팀 칸을 누르세요. 같은 캐릭터 위에 놓으면 합쳐져요 (3마리 Lv2, 6마리 Lv3).';
+  if(sel?.src==='food'){const f=FOODS[me.shop.food[sel.i].key];info=`<strong>${f.n}</strong> · 3골드<br>${f.d}${f.all?' — 내 팀 아무 칸이나 누르면 사용':' — 줄 펫을 누르세요'}`}
+  else if(sel){const p=sel.src==='team'?me.team[sel.i]:me.shop.pets[sel.i],d=PETS[p.key],L=p.xp!=null?lvlOf(p.xp):1;
+    info=`<strong>${d.n}</strong> · ${d.t}티어 · ${sel.src==='team'?`판매 ${L}골드`:'3골드'}<br>${d.d(L)}${p.perk?`<br>${FOODS[p.perk].e} ${FOODS[p.perk].d}`:''}`}
+  $('info').innerHTML=info;
+  $('roll').disabled=me.gold<1;
+  $('freeze').disabled=!sel||sel.src==='team';
+  $('freeze').textContent=sel&&sel.src!=='team'&&(sel.src==='pet'?me.shop.pets:me.shop.food)[sel.i].frozen?'녹이기':'얼리기';
+  $('sell').disabled=sel?.src!=='team';
+}
+let tt;function toast(m){$('toast').textContent=m;$('toast').classList.add('on');clearTimeout(tt);tt=setTimeout(()=>$('toast').classList.remove('on'),1800)}
+function fail(m){if(m)toast(m);return m}
+
+document.addEventListener('click',e=>{
+  if(!$('battle').hidden)return;
+  const el=e.target.closest('[data-team],[data-pet],[data-food]');
+  if(!el)return;
+  if(el.dataset.pet!=null){const i=+el.dataset.pet;sel=isSel('pet',i)?null:{src:'pet',i}}
+  else if(el.dataset.food!=null){const i=+el.dataset.food;sel=isSel('food',i)?null:{src:'food',i}}
+  else{
+    const j=+el.dataset.team,t=me.team[j];
+    if(sel?.src==='pet'){if(!fail(buyPet(me,sel.i,j)))sel=null}
+    else if(sel?.src==='food'){if(!fail(buyFood(me,sel.i,t)))sel=null}
+    else if(sel?.src==='team'){
+      const a=me.team[sel.i];
+      if(sel.i!==j){if(t&&t.key===a.key&&t.xp<5){merge(me,t,a);me.team[sel.i]=null}else{me.team[sel.i]=t;me.team[j]=a}}
+      sel=null;
+    }else if(t)sel={src:'team',i:j};
+  }
+  render();
+});
+$('roll').onclick=()=>{fail(reroll(me));sel=sel?.src==='team'?sel:null;render()};
+$('freeze').onclick=()=>{const it=(sel.src==='pet'?me.shop.pets:me.shop.food)[sel.i];it.frozen=!it.frozen;render()};
+$('sell').onclick=()=>{sell(me,sel.i);sel=null;render()};
+$('end').onclick=()=>{
+  if(!me.team.some(Boolean))return toast('펫을 한 마리 이상 배치하세요');
+  sel=null;endTurn(me);
+  const {frames,r}=battle(me.team,bot.team);
+  $('foeName').textContent=foeName;$('battle').hidden=false;$('next').hidden=true;$('skip').hidden=false;
+  let i=0,timer;
+  const show=(f,prev)=>{
+    const hp=new Map(prev?[...prev.A,...prev.B].map(p=>[p.uid,p.hp]):[]);
+    const draw=t=>t.map((p,k)=>card(p,{cls:`${k===0?'front':''} ${p.hp<=0?'dead':''} ${hp.has(p.uid)&&hp.get(p.uid)>p.hp?'hit':''}`})).join('');
+    $('ba').innerHTML=draw(f.A);$('bb').innerHTML=draw(f.B);$('bmsg').textContent=f.msg;
+  };
+  const done=()=>{
+    $('skip').hidden=true;$('next').hidden=false;
+    const loss=me.turn<=2?1:me.turn<=4?2:3;
+    if(r==='win')me.wins++;else if(r==='lose')me.lives=Math.max(0,me.lives-loss);
+    const over=me.wins>=10?'트로피 10개! 우승이에요':me.lives<=0?`게임 오버 · 트로피 ${me.wins}개`:'';
+    $('bmsg').textContent=(r==='win'?'승리! 트로피 +1':r==='lose'?`패배… 체력 -${loss}`:'무승부')+(over?` — ${over}`:'');
+    $('next').textContent=over?'새 게임':'다음 턴';
+    if(over){stats.games++;stats.best=Math.max(stats.best,me.wins);if(me.wins>=10)stats.champs++}
+    $('next').onclick=()=>{$('battle').hidden=true;over?newGame():nextTurn()};
+  };
+  const step=()=>{show(frames[i],frames[i-1]);if(++i<frames.length)timer=setTimeout(step,650);else done()};
+  $('skip').onclick=()=>{clearTimeout(timer);show(frames[frames.length-1]);done()};
+  step();
+};
+function nextTurn(){startTurn(me);startTurn(bot);botPlay(bot);endTurn(bot);render();save()}
+function newGame(){me=newState(true);bot=newState(false);foeName=PETS[pickPet(1,6)].n+'의 팀';sel=null;nextTurn()}
+
+// ---------- Google 로그인 · Firestore 저장 (autopets/{uid} 한 문서) ----------
+// ponytail: 턴 시작 시점만 저장한다. 상점에서 하던 일은 새로고침하면 그 턴 처음으로 돌아간다.
+const FIREBASE_CONFIG=null;
+const FB='https://www.gstatic.com/firebasejs/10.12.2/';
+let fb=null,user=null,stats={games:0,champs:0,best:0};
+function showAccount(){
+  $('login').textContent=user?'로그아웃':'Google 로그인';
+  $('account').textContent=user?`${user.displayName||'플레이어'} · 완주 ${stats.games}판 · 우승 ${stats.champs}번 · 최고 트로피 ${stats.best}`:'로그인하면 진행 상황과 기록이 저장돼요';
+}
+async function initFirebase(){
+  if(!FIREBASE_CONFIG)return;
+  const [app,auth,fs]=await Promise.all(['firebase-app.js','firebase-auth.js','firebase-firestore-lite.js'].map(f=>import(FB+f)));
+  const a=app.initializeApp(FIREBASE_CONFIG);
+  fb={auth:auth.getAuth(a),A:auth,db:fs.getFirestore(a),F:fs};
+  auth.onAuthStateChanged(fb.auth,async u=>{
+    user=u;
+    if(u){
+      try{
+        const s=await fs.getDoc(fs.doc(fb.db,'autopets',u.uid));
+        if(s.exists()){
+          const d=s.data();stats={games:d.games||0,champs:d.champs||0,best:d.best||0};
+          if(d.run){const r=JSON.parse(d.run);me=r.me;bot=r.bot;foeName=r.foeName;uid=r.uid;sel=null;render();toast('저장된 게임을 불러왔어요')}
+        }else save();
+      }catch(e){console.error(e);toast('기록을 불러오지 못했어요')}
+    }
+    showAccount();
+  });
+}
+async function save(){
+  if(!fb||!user)return;
+  const {F,db}=fb;
+  try{await F.setDoc(F.doc(db,'autopets',user.uid),{name:(user.displayName||'').slice(0,40),run:JSON.stringify({me,bot,foeName,uid}),...stats,at:F.serverTimestamp()})}
+  catch(e){console.error(e);toast('저장하지 못했어요')}
+}
+$('login').onclick=async()=>{
+  if(!fb)return toast('Firebase 연결 준비 중이에요');
+  if(user){await fb.A.signOut(fb.auth);stats={games:0,champs:0,best:0};return newGame()}
+  try{await fb.A.signInWithPopup(fb.auth,new fb.A.GoogleAuthProvider())}
+  catch(e){if(e.code!=='auth/popup-closed-by-user')toast('로그인하지 못했어요')}
+};
+newGame();showAccount();initFirebase();
+</script>
+</body>
+</html>
