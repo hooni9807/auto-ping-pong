@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Auto Ping Pong</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800;900&display=swap">
@@ -173,6 +173,15 @@ button.go:hover:not(:disabled){background:linear-gradient(180deg,#fff0c4,#d9bb7c
 .sep{flex:0 0 1px;margin:6px 2px;background:var(--line)}
 
 #bctl{display:flex;gap:8px;justify-content:center}
+@media (max-width:760px){   /* 휴대폰 전투: 보드가 화면 전체를 채운다 */
+  main.battling .wrap{position:fixed;inset:0;z-index:30;background:#0a171c}
+  main.battling canvas.board{width:100vw;height:100vh;height:100dvh;max-height:none;aspect-ratio:auto;border:0;border-radius:0;box-shadow:none}
+  main.battling .traits{top:calc(10px + env(safe-area-inset-top))}
+  main.battling .right{top:calc(10px + env(safe-area-inset-top))}
+  main.battling .caption{bottom:calc(84px + env(safe-area-inset-bottom));font-size:15px}
+  main.battling #bctl{position:fixed;left:0;right:0;bottom:0;z-index:31;padding:16px 16px calc(14px + env(safe-area-inset-bottom));background:linear-gradient(transparent,#060c10f0 45%)}
+  main.battling #bctl button{flex:1;min-height:48px}
+}
 #lobby{max-width:720px;margin:0 auto;padding:10px 16px 28px;display:flex;flex-direction:column;gap:14px}
 #account{color:var(--muted);font-size:12px;margin-top:-6px}
 .play{display:flex;flex-direction:column;gap:10px;padding:18px 14px;border:1px solid var(--line-strong);border-radius:14px;background:linear-gradient(180deg,#132a32,#0b1a20)}
@@ -590,7 +599,8 @@ function makeArena(cv){
   const cam={shA:0,shU:0,flC:'#fff',flA:0,flU:0,flD:1,zx:0,zy:0,zA:0,zT:0,zD:1};
   const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
   function fit(){const r=cv.getBoundingClientRect(),d=devicePixelRatio||1;if(r.width&&(r.width!==W||r.height!==H)){W=r.width;H=r.height;cv.width=W*d;cv.height=H*d;g.setTransform(d,0,0,d,0,0)}}
-  function tile(c,r){const top=H*.22,bot=H*.99,rh=(bot-top)/4,p=.84+.16*r/3,w=Math.min(W*.92/5.6,rh*1.25)*p;return{x:W/2+(c-2+(r%2?.25:-.25))*w,y:top+(r+.5)*rh,w}}
+  function geo(){const wMax=W*.92/5.6,rh=Math.min(H*.77/4,wMax*1.3);return{wMax,rh,top:(H-4*rh)/2+H*.04}}
+  function tile(c,r){const {wMax,rh,top}=geo(),p=.84+.16*r/3,w=Math.min(wMax,rh*1.25)*p;return{x:W/2+(c-2+(r%2?.25:-.25))*w,y:top+(r+.5)*rh,w}}
   const pos=(side,i)=>{const[dr,c]=SLOT[Math.min(i,4)];return tile(c,side==='A'?2+dr:1-dr)};
   const spawn=o=>{if(parts.length<700)parts.push({born:performance.now(),g:0,drag:1,...o})};
   function shake(a,ms){if(reduced)return;cam.shA=Math.max(cam.shA,a);cam.shU=performance.now()+ms}
@@ -711,7 +721,7 @@ function makeArena(cv){
   }
 
   // ----- 그리기 -----
-  function edge(rf){const top=H*.22,bot=H*.99,rh=(bot-top)/4,p=.84+.16*rf/3,w=Math.min(W*.92/5.6,rh*1.25)*p;return{y:top+(rf+.5)*rh,hw:w*2.95,rh}}
+  function edge(rf){const {wMax,rh,top}=geo(),p=.84+.16*rf/3,w=Math.min(wMax,rh*1.25)*p;return{y:top+(rf+.5)*rh,hw:w*2.95,rh}}
   function drawTable(){   // 탁구대: 파란 상판, 흰 테두리 선과 가운데 선, 앞쪽 두께
     const a=edge(-.6),b=edge(3.45),th=b.rh*.13;
     g.fillStyle='rgba(0,0,0,.45)';g.beginPath();g.ellipse(W/2,b.y+th+6,b.hw*1.05,th*1.6,0,0,7);g.fill();
@@ -1023,7 +1033,7 @@ $('end').onclick=()=>{
   if(!me.team.some(Boolean))return toast('캐릭터를 한 명 이상 보드에 놓으세요');
   sel=null;endTurn(me);
   const {frames,r}=battle(me.team,bot.team);
-  mode='battle';$('shopbar').hidden=$('info').hidden=true;$('bctl').hidden=false;$('next').hidden=true;$('skip').hidden=false;
+  mode='battle';document.querySelector('main').classList.add('battling');scrollTo(0,0);$('shopbar').hidden=$('info').hidden=true;$('bctl').hidden=false;$('next').hidden=true;$('skip').hidden=false;
   board.play(frames,()=>{
     $('skip').hidden=true;$('next').hidden=false;
     const loss=1;   // 지면 체력 1만 깎인다
@@ -1032,7 +1042,7 @@ $('end').onclick=()=>{
     $('caption').textContent=(r==='win'?'승리! 트로피 +1':r==='lose'?`패배… 체력 -${loss}`:'무승부')+(over?` — ${over}`:'');
     $('next').textContent=over?'로비로':'다음 턴';
     if(over){stats.games++;stats.best=Math.max(stats.best,me.wins);if(me.wins>=10)stats.champs++;record(me.wins>=10?'win':'lose',me.wins,me.diff);save()}
-    $('next').onclick=()=>{mode='shop';$('shopbar').hidden=$('info').hidden=false;$('bctl').hidden=true;over?showScreen('lobby'):nextTurn()};
+    $('next').onclick=()=>{document.querySelector('main').classList.remove('battling');mode='shop';$('shopbar').hidden=$('info').hidden=false;$('bctl').hidden=true;over?showScreen('lobby'):nextTurn()};
   },$('caption'));
 };
 // 프롤로그: 봇 두 팀을 몇 턴 키운 뒤 실제 전투를 계속 돌려 보여 준다.
@@ -1052,6 +1062,7 @@ function showScreen(sc){   // prologue · lobby · game
   $('prologue').hidden=sc!=='prologue';$('lobby').hidden=sc!=='lobby';document.querySelector('main').hidden=sc!=='game';
   clearTimeout(demoTimer);pboard.stop();board.stop();
   if(sc==='prologue'){pboard.start();demo()}
+  document.querySelector('main').classList.remove('battling');
   if(sc==='game'){mode='shop';$('shopbar').hidden=$('info').hidden=false;$('bctl').hidden=true;board.start();render()}
   if(sc==='lobby'){$('diffs').hidden=true;$('resume').hidden=!started();if(started())$('resume').querySelector('span').textContent=`이어하기 · ${DIFFS[me.diff]?.n||'하드'} 라운드 ${me.turn}`;loadRank()}
 }
