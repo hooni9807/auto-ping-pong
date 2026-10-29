@@ -501,6 +501,7 @@ const PETS={
   seohyun:T('일병3호봉',2,3,1,L=>`기절: 뒤 아군 2명 +${L}/+${L}`,{f:'private-four',faint(c,L){c.mine.slice(c.idx,c.idx+2).forEach(f=>buff(f,L,L))}}),
   drunk:T('만취범',2,3,2,L=>`기절: 모든 펫에게 ${2*L} 피해`,{faint(c,L){[...c.mine,...c.foe].forEach(p=>dmg(p,2*L,c.me))}}),
   songstar:T('송스타',2,2,4,L=>`피격 후 생존: 공격 +${2*L}`,{hurt(c,L){if(c.me.hp>0)c.me.atk=cap(c.me.atk+2*L)}}),
+  yugeon:T('유건범',3,2,5,L=>`턴 종료: 꿀잠 자고 체력 +${2*L}`,{endTurn(S,me,L){buff(me,0,2*L)}}),
   kumho:T('금호관장',3,1,5,L=>`기절: 뒤 아군 ${L}명에게 발목보호대(피해 -20) 지급`,{faint(c,L){c.mine.slice(c.idx,c.idx+L).forEach(f=>f.perk='melon')}}),
   percival:T('퍼시벌',3,2,3,L=>`앞 아군이 공격할 때: +${L}/+${L}`,{ahead(c,L){buff(c.me,L,L)}}),
   yunhwan:T('카사노바 윤',3,3,3,L=>`피격: 랜덤 적에게 ${2*L} 피해`,{hurt(c,L){dmg(R(alive(c.foe)),2*L,c.me)}}),
@@ -572,7 +573,7 @@ const ULTS={
   hammer:{n:'천벌 해머',t:'thunder',fx:'shock',c:'#ffdc78'},meteor:{n:'메테오 스매시',t:'thunder',fx:'fire',c:'#ff7828'},
 };
 const ULT_OF={hugo:'blitz',ajae:'phantasm',jongryeong:'wall',ttalgak:'flick',seohyun:'sunflare',drunk:'blast',songstar:'aegis',infibot:'typhoon',
-  kumho:'starfall',percival:'radiant',yunhwan:'magnet',jiseong:'phoenixc',leesin:'dragon',adam:'drill',sleepy:'lunar',aribeom:'sakura',
+  kumho:'starfall',percival:'radiant',yunhwan:'magnet',jiseong:'phoenixc',leesin:'dragon',adam:'drill',sleepy:'lunar',yugeon:'lunar',aribeom:'sakura',
   hyde:'shadowc',godyung:'mirage',gambler:'comet',ninja:'blade',jh:'eclipse',pastor:'heaven',boss:'hammer',minhee:'meteor'};
 const ULT_DESC={loop:'맨 앞 적에게 공격력 ×2 피해',lightning:'맨 앞 적에게 공격력 ×1.5, 그 뒤 적에게 절반 피해',thunder:'모든 적에게 공격력 절반 피해',
   crescent:'맨 뒤 적에게 공격력 ×1.5 피해',phantom:'맨 앞 적의 공격력을 절반으로 낮추고 공격력 절반 피해',
@@ -590,7 +591,7 @@ const TRAITS={
   comeback:{s:'역전',n:'역전',c:'#2dd4bf',th:[2,3],d:['역전 아군이 쓰러지면 남은 아군 +2/+2','역전 아군이 쓰러지면 남은 아군 +4/+4']},
 };
 const TRAIT_OF={hugo:['atk'],ajae:['vet'],jongryeong:['def','vet'],ttalgak:['tech'],seohyun:['atk'],drunk:['vet','comeback'],songstar:['def'],
-  infibot:['def'],kumho:['def','vet'],percival:['atk'],yunhwan:['def'],jiseong:['comeback'],leesin:['atk'],adam:['tech'],sleepy:['dual'],
+  infibot:['def'],kumho:['def','vet'],percival:['atk'],yunhwan:['def'],jiseong:['comeback'],leesin:['atk'],adam:['tech'],sleepy:['dual'],yugeon:['def','vet'],
   aribeom:['boss','tech'],hyde:['dual'],godyung:['boss','tech'],gambler:['atk','comeback'],ninja:['tech'],jh:['dual'],pastor:['vet'],boss:['boss'],minhee:['boss','atk']};
 const hasTrait=(key,t)=>(TRAIT_OF[key]||[]).includes(t);
 function traitCounts(team){const seen=new Set(),c={};for(const p of team)if(p&&!seen.has(p.key)){seen.add(p.key);(TRAIT_OF[p.key]||[]).forEach(t=>c[t]=(c[t]||0)+1)}return c}
@@ -831,6 +832,7 @@ const STYLE={
   leesin:{c:'#f97316',hit:'kick',fx:'fire',mv:'hop',pose:'wide'},
   adam:{c:'#c4b5fd',hit:'spin',fx:'vortex',mv:'glide'},
   sleepy:{c:'#7dd3fc',hit:'smash',fx:'shock',mv:'wobble'},
+  yugeon:{c:'#e5e7eb',hit:'lob',fx:'bubble',mv:'wobble',pose:'lean'},
   aribeom:{c:'#f472b6',hit:'charm',fx:'heart',mv:'glide'},
   hyde:{c:'#dc2626',hit:'smash',fx:'dark',mv:'stomp',pose:'wide'},
   godyung:{c:'#e879f9',hit:'cards',fx:'card',mv:'walk'},
