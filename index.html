@@ -395,7 +395,7 @@ button.syn .ico{color:var(--gold-hi)}button.syn small{font:600 12px/1 var(--body
 </svg>
 <div id="prologue">
   <h2>Auto Ping Pong</h2>
-  <p class="sub">동호회 탁구 캐릭터로 팀을 꾸리고, 탁구대 위의 자동 대결을 지켜보세요. 트로피 10개를 모으면 우승입니다.</p>
+  <p class="sub">동호회 탁구 캐릭터로 팀을 꾸리고, 탁구대 위의 자동 대결을 지켜보세요. 트로피 15개를 모으면 우승입니다.</p>
   <div class="wrap"><canvas id="pboard" class="board"></canvas><div id="pmsg" class="caption"></div><span class="tag">실제 경기 미리보기</span></div>
   <button id="plogin" disabled><svg width="18" height="18" viewBox="0 0 48 48" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9.1 3.6l6.8-6.8C35.8 2.4 30.3 0 24 0 14.6 0 6.6 5.4 2.7 13.3l7.9 6.1C12.5 13.7 17.8 9.5 24 9.5z"/><path fill="#4285F4" d="M46.1 24.5c0-1.6-.1-3.1-.4-4.5H24v9h12.4c-.5 2.9-2.2 5.3-4.6 6.9l7.4 5.7c4.3-4 6.9-9.9 6.9-17.1z"/><path fill="#FBBC05" d="M10.6 28.6c-.5-1.4-.8-3-.8-4.6s.3-3.2.8-4.6l-7.9-6.1C1 16.6 0 20.2 0 24s1 7.4 2.7 10.7l7.9-6.1z"/><path fill="#34A853" d="M24 48c6.5 0 11.9-2.1 15.9-5.8l-7.4-5.7c-2.1 1.4-4.8 2.3-8.5 2.3-6.2 0-11.5-4.2-13.4-9.9l-7.9 6.1C6.6 42.6 14.6 48 24 48z"/></svg><span>불러오는 중…</span></button>
   <p class="note">로그인하면 진행 상황과 기록이 저장돼요</p>
@@ -445,7 +445,7 @@ button.syn .ico{color:var(--gold-hi)}button.syn small{font:600 12px/1 var(--body
     <button id="mkRoom" class="tile"><span class="ti"><svg class="ico"><use href="#i-plus"/></svg></span><span><b>방 만들기</b><small>방 목록에 올라가고, 상대가 누르면 바로 시작해요</small></span></button>
     <div class="rlhead"><b>열린 방</b><small id="roomCount"></small></div>
     <ul id="roomList" class="rooms" aria-live="polite"><li class="empty">방 목록을 불러오는 중…</li></ul>
-    <p class="rule">두 사람이 같은 라운드에 동시에 팀을 짜고, 둘 다 준비되면 같은 전투를 함께 봐요. 라운드마다 75초, 전투가 끝나면 8초 뒤 다음 라운드로 넘어가요. 트로피 10개를 먼저 모으거나 상대 체력을 0으로 만들면 승리하고, PVP 점수가 오르내려요.</p>
+    <p class="rule">두 사람이 같은 라운드에 동시에 팀을 짜고, 둘 다 준비되면 같은 전투를 함께 봐요. 라운드마다 75초, 전투가 끝나면 8초 뒤 다음 라운드로 넘어가요. 트로피 15개를 먼저 모으거나 상대 체력을 0으로 만들면 승리하고, PVP 점수가 오르내려요.</p>
   </div>
   <div data-view="wait" class="dv" hidden>
     <p class="lbl">방 코드</p>
@@ -1218,7 +1218,7 @@ function render(){
   const myTr=traitCounts(me.team),owned=k=>me.team.some(p=>p&&p.key===k);
   $('stage').innerHTML=me.pvp&&pvp?pvpStage():`<span style="color:${DIFFS[me.diff]?.c}">${DIFFS[me.diff]?.n||''}</span> 라운드 <span class="num">${me.turn}</span>`;
   $('gold').textContent=me.gold;
-  $('trophy').innerHTML=`<svg class="ico" style="width:15px;height:15px;color:var(--gold)"><use href="#i-trophy"/></svg><span class="num">${me.wins}</span>/10`;
+  $('trophy').innerHTML=`<svg class="ico" style="width:15px;height:15px;color:var(--gold)"><use href="#i-trophy"/></svg><span class="num">${me.wins}</span>/15`;
   $('players').innerHTML=`<div class="pl me"><b>나</b><span class="num">${me.lives}</span><div class="bar"><i style="width:${me.lives*20}%"></i></div></div><div class="pl foe"><b>${foeName}</b>${me.pvp&&pvp?`<span class="num">${pvp.oppLives}</span><small class="st8 ${oppGone()?'bad':oppReady()?'ok':''}">${oppGone()?'연결 끊김':oppReady()?'준비 완료':'팀 정하는 중'}</small><div class="bar"><i style="width:${pvp.oppLives*20}%"></i></div>`:'<span></span><div class="bar"><i style="width:100%"></i></div>'}</div>`;
   $('shop').innerHTML=me.shop.pets.map((x,i)=>{const d=PETS[x.key];return`<div class="sc ${isSel('pet',i)} ${x.frozen?'frozen':''} ${owned(x.key)?'owned':''} ${x.bonus?'bonus':''}" style="--tc:${TC[d.t]}" data-pet="${i}" role="button" aria-label="${d.n} ${d.t}코스트, 3골드${owned(x.key)?', 보드에 있음':''}${x.bonus?', 레벨업 보너스':''}"><img src="faces/${d.f||x.key}-face.png" alt="" draggable="false"><span class="st"><b>${x.atk}</b><b>${x.hp}</b></span><span class="tt">${(TRAIT_OF[x.key]||[]).map(t=>`<i class="${myTr[t]?'has':''}" style="--tc:${TRAITS[t].c}">${TRAITS[t].s}</i>`).join('')}</span>${owned(x.key)?'<span class="spark" aria-hidden="true"></span>':''}${x.bonus?'<span class="bonus-tag">레벨업 보너스</span>':''}<span class="cb">${d.t}<small>코</small></span><div class="plate"><span>${d.n}</span></div>${x.frozen?`<span class="ice ${fresh==='p'+i?'fresh':''}" aria-hidden="true"><svg class="ico"><use href="#i-freeze"/></svg></span>`:''}</div>`}).join('')
     +'<div class="sep"></div>'
@@ -1311,10 +1311,10 @@ $('end').onclick=()=>{
     $('skip').hidden=true;$('next').hidden=false;
     const loss=1;   // 지면 체력 1만 깎인다
     if(r==='win')me.wins++;else if(r==='lose')me.lives=Math.max(0,me.lives-loss);
-    const over=me.wins>=10?'트로피 10개! 우승이에요':me.lives<=0?`게임 오버 · 트로피 ${me.wins}개`:'';
+    const over=me.wins>=15?'트로피 15개! 우승이에요':me.lives<=0?`게임 오버 · 트로피 ${me.wins}개`:'';
     $('caption').textContent=(r==='win'?'승리! 트로피 +1':r==='lose'?`패배… 체력 -${loss}`:'무승부')+(over?` — ${over}`:'');
     $('next').textContent=over?'로비로':'다음 턴';
-    if(over){stats.games++;stats.best=Math.max(stats.best,me.wins);if(me.wins>=10)stats.champs++;record(me.wins>=10?'win':'lose',me.wins,me.diff);save()}
+    if(over){stats.games++;stats.best=Math.max(stats.best,me.wins);if(me.wins>=15)stats.champs++;record(me.wins>=15?'win':'lose',me.wins,me.diff);save()}
     $('next').onclick=()=>{document.querySelector('main').classList.remove('battling');mode='shop';$('shopbar').hidden=$('info').hidden=false;$('bctl').hidden=true;over?showScreen('lobby'):nextTurn()};
   },$('caption'));
 };
@@ -1602,7 +1602,7 @@ function pvpResult(r){
   $('skip').hidden=true;$('next').hidden=false;
   if(r==='win'){me.wins++;pvp.oppLives--}else if(r==='lose'){me.lives--;pvp.oppWins++}
   roomWrite({[`lives.${user.uid}`]:me.lives,[`wins.${user.uid}`]:me.wins});
-  const won=me.wins>=10||pvp.oppLives<=0,lost=!won&&(me.lives<=0||pvp.oppWins>=10);
+  const won=me.wins>=15||pvp.oppLives<=0,lost=!won&&(me.lives<=0||pvp.oppWins>=15);
   Sound.sfx(r==='win'?'win':r==='lose'?'lose':'tap');
   $('caption').textContent=(r==='win'?'승리! 트로피 +1':r==='lose'?'패배… 체력 -1':'무승부')+(won?' — PVP 승리!':lost?' — PVP 패배':'');
   $('next').textContent=won||lost?'결과 보기':'다음 라운드';

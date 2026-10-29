@@ -20,7 +20,7 @@ service cloud.firestore {
         && request.resource.data.name is string && request.resource.data.name.size() >= 1 && request.resource.data.name.size() <= 20
         && request.resource.data.diff in ['easy', 'hard', 'extreme', 'ultra']
         && request.resource.data.result in ['win', 'lose']
-        && request.resource.data.wins is int && request.resource.data.wins >= 0 && request.resource.data.wins <= 10
+        && request.resource.data.wins is int && request.resource.data.wins >= 0 && request.resource.data.wins <= 15
         && request.resource.data.at == request.time;
     }
     // PVP 방: 방장이 만들고, 비어 있는 방에는 한 사람만 참가자로 들어올 수 있다. 진행 중에는 두 사람만 고친다.
